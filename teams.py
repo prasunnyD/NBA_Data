@@ -52,4 +52,4 @@ m_conley = Player('Mike Conley', 'Minnesota')
 
 minn_lineup = [a_edwards, r_gobert, j_mcdaniels, k_towns, m_conley]
 timberwolves = Team('Minnesota', minn_lineup)
-print(timberwolves.get_team_adv_stats())
+print(timberwolves.get_team_lineup_stats())
