@@ -1,7 +1,8 @@
-from nba_api.stats.endpoints import playercareerstats, PlayerDashboardByGameSplits, LeagueDashPlayerStats, PlayerDashboardByYearOverYear
+from nba_api.stats.endpoints import playercareerstats, PlayerDashboardByGameSplits, LeagueDashPlayerStats, PlayerDashboardByYearOverYear, CumeStatsPlayerGames, WinProbabilityPBP, PlayerGameLogs, PlayerGameLog
 from nba_api.stats.static import players
+from nba_api.stats.library.parameters import SeasonAll
 import pandas as pd
-
+import re
 
 class Player:
     def __init__(self, name : str, team : str) -> None:
@@ -45,7 +46,7 @@ class Player:
         final = mergeTables(player_stats, adv_player_stats)
         return final
     
-    def get_career_stats(self, season : str = None, season_type : str = "Regular Season", season_segment : str = None) -> pd.DataFrame:
+    def get_career_stats2(self, season : str = None, season_type : str = "Regular Season", season_segment : str = None) -> pd.DataFrame:
         """
         Combines box score stats and advanced stats to return career stats of player
         
@@ -53,7 +54,7 @@ class Player:
                     per_mode (str): string for if user wants (Totals,PerGame,MinutesPer,Per48,Per40,Per36,PerMinute,PerPossession,PerPlay,Per100Possesions,Per100Plays)
 
             Returns:
-                    final (Datafram): pandas dataframe of player's current season stats
+                    final (Dataframe): pandas dataframe of player's current season stats
 
 
         TODO: Make so can get single season from this to
@@ -69,7 +70,42 @@ class Player:
         final = mergeTables(player_career_stats,player_career_adv_stats)
         return final
     
-        
+    def get_games(self):
+        '''
+        Gives out game ids. Could use game ids in boxscore to create dataframe of box score for season
+        '''
+        stats = CumeStatsPlayerGames(player_id=self.id,season_type_all_star='Regular Season').get_data_frames()[0]
+        stats['MATCHUP'] = [re.sub('Timberwolves', '', x) for x in stats['MATCHUP']]
+        stats['MATCHUP'] = [re.sub('at', '', x) for x in stats['MATCHUP']]
+        stats[['DATE', 'OPPONENT','OPPONENT SUFFIX']] = stats["MATCHUP"].apply(lambda x: pd.Series(str(x).split()))
+        #stats['OPPONENT'] = stats[['OPPONENT', 'OPPONENT SUFFIX']].apply('-'.join,axis=1)
+        stats['TUTTI'] = stats['OPPONENT'].astype(str)+stats['OPPONENT SUFFIX']
+        #print(stats.MATCHUP.str.split(expand=True))
+        return stats
+
+    #TODO PlayerDashboardByGameSplits might be useful to get player performance by halves and quarter
+
+    def test_func(self):
+        '''Play by play see what can be done with this, move to team.py'''
+        pbp = WinProbabilityPBP('0022201225').get_data_frames()[0]
+        print(pbp)
+
+    def player_career_boxscore(self):
+        gamelog_df = PlayerGameLog(player_id=self.id,season=SeasonAll.all).get_data_frames()[0]
+        # parameters = {
+        #         'PlayerID': self.id,
+        #         'Season': '2022-23'
+        # }
+        # response = requests.get(url='https://stats.nba.com/stats/playergamelogs',params=parameters, proxies=None, headers=None, timeout=None)
+        # url = response.url
+        # status_code = response.status_code
+        # contents = response.text
+        # print(contents)
+        return gamelog_df
+            
+
+
+
 def mergeTables(df1 : pd.DataFrame, df2 : pd.DataFrame) -> pd.DataFrame:
     """
     Merges two dataframes into one
@@ -78,8 +114,8 @@ def mergeTables(df1 : pd.DataFrame, df2 : pd.DataFrame) -> pd.DataFrame:
     return result
     
 
-# a_edwards = Player('Anthony Edwards','Minnesota')
-# print(a_edwards.get_career_stats(season='2022-23'))
+a_edwards = Player('Anthony Edwards','Minnesota')
+print(a_edwards.player_career_boxscore())
 
 
 

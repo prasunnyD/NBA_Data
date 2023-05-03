@@ -44,6 +44,9 @@ class Team:
             lineup_stats = pd.concat([lineup_stats, player.get_current_season_stats()])
         return lineup_stats
 
+
+    #TODO TeamAndPlayersVsPlayers CAN BE USED FOR LINEUP COMPARISON
+
 a_edwards = Player('Anthony Edwards','Minnesota')
 r_gobert = Player('Rudy Gobert', 'Minnesota')
 j_mcdaniels = Player('Jaden McDaniels', 'Minnesota')
