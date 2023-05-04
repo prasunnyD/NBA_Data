@@ -75,12 +75,12 @@ class Player:
         Gives out game ids. Could use game ids in boxscore to create dataframe of box score for season
         '''
         stats = CumeStatsPlayerGames(player_id=self.id,season_type_all_star='Regular Season').get_data_frames()[0]
-        stats['MATCHUP'] = [re.sub('Timberwolves', '', x) for x in stats['MATCHUP']]
-        stats['MATCHUP'] = [re.sub('at', '', x) for x in stats['MATCHUP']]
-        stats[['DATE', 'OPPONENT','OPPONENT SUFFIX']] = stats["MATCHUP"].apply(lambda x: pd.Series(str(x).split()))
-        #stats['OPPONENT'] = stats[['OPPONENT', 'OPPONENT SUFFIX']].apply('-'.join,axis=1)
-        stats['TUTTI'] = stats['OPPONENT'].astype(str)+stats['OPPONENT SUFFIX']
-        #print(stats.MATCHUP.str.split(expand=True))
+        # stats['MATCHUP'] = [re.sub('Timberwolves', '', x) for x in stats['MATCHUP']]
+        # stats['MATCHUP'] = [re.sub('at', '', x) for x in stats['MATCHUP']]
+        # stats[['DATE', 'OPPONENT','OPPONENT SUFFIX']] = stats["MATCHUP"].apply(lambda x: pd.Series(str(x).split()))
+        # #stats['OPPONENT'] = stats[['OPPONENT', 'OPPONENT SUFFIX']].apply('-'.join,axis=1)
+        # stats['TUTTI'] = stats['OPPONENT'].astype(str)+stats['OPPONENT SUFFIX']
+        # #print(stats.MATCHUP.str.split(expand=True))
         return stats
 
     #TODO PlayerDashboardByGameSplits might be useful to get player performance by halves and quarter
@@ -92,18 +92,42 @@ class Player:
 
     def player_career_boxscore(self):
         gamelog_df = PlayerGameLog(player_id=self.id,season=SeasonAll.all).get_data_frames()[0]
-        # parameters = {
-        #         'PlayerID': self.id,
-        #         'Season': '2022-23'
-        # }
-        # response = requests.get(url='https://stats.nba.com/stats/playergamelogs',params=parameters, proxies=None, headers=None, timeout=None)
-        # url = response.url
-        # status_code = response.status_code
-        # contents = response.text
-        # print(contents)
         return gamelog_df
             
+    def player_minutes(self):
+        '''
+        Returns df for minutes projection. Not sure if needed. Could be useful for injuries.
+        '''
+        boxscore_df = self.player_career_boxscore()
+        min_df = pd.DataFrame()
+        min_df['MIN'] = boxscore_df['MIN']
+        min_df['prev_3_avg'] = boxscore_df['MIN'].rolling(3).mean()
+        #min_df['prev_5_avg'] = boxscore_df['MIN'].rolling(5).mean()
+        min_df['prev_3_median'] = boxscore_df['MIN'].rolling(3).median()
+        #min_df['prev_5_median'] = boxscore_df['MIN'].rolling(5).median()
+        min_df['prev_3_std'] = boxscore_df['MIN'].rolling(3).std()
+        #min_df['prev_5_std'] = boxscore_df['MIN'].rolling(5).std()
+        min_df.dropna(inplace=True)
+        return min_df
 
+    def player_points(self):
+        '''
+        TODO get opponents stats, home and away
+        '''
+        boxscore_df = self.player_career_boxscore()
+        pts_df = pd.DataFrame()
+        pts_df['PTS'] = boxscore_df['PTS']
+        pts_df['MIN'] = boxscore_df['MIN']
+        pts_df['FG_PCT'] = boxscore_df['FG_PCT']
+        pts_df['FGM'] = boxscore_df['FGM']
+        pts_df['FGA'] = boxscore_df['FGA']
+        pts_df['FG3_PCT'] = boxscore_df['FG3_PCT']
+        pts_df['FG3M'] = boxscore_df['FG3M']
+        pts_df['FG3A'] = boxscore_df['FG3A']
+        pts_df['FT_PCT'] = boxscore_df['FT_PCT']
+        pts_df.dropna(inplace=True)
+        return pts_df
+        
 
 
 def mergeTables(df1 : pd.DataFrame, df2 : pd.DataFrame) -> pd.DataFrame:

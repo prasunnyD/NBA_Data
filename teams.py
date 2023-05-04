@@ -1,5 +1,5 @@
 from nba_api.stats.static import teams
-from nba_api.stats.endpoints import TeamPlayerDashboard, PlayerDashboardByGameSplits, TeamDashboardByYearOverYear
+from nba_api.stats.endpoints import TeamPlayerDashboard, PlayerDashboardByGameSplits, TeamDashboardByYearOverYear, LeagueGameLog
 from players import *
 
 class Team:
@@ -44,7 +44,9 @@ class Team:
             lineup_stats = pd.concat([lineup_stats, player.get_current_season_stats()])
         return lineup_stats
 
-
+    def team_scores(self):
+        boxscore = LeagueGameLog().get_data_frames()[0]
+        return boxscore
     #TODO TeamAndPlayersVsPlayers CAN BE USED FOR LINEUP COMPARISON
 
 a_edwards = Player('Anthony Edwards','Minnesota')
@@ -55,4 +57,4 @@ m_conley = Player('Mike Conley', 'Minnesota')
 
 minn_lineup = [a_edwards, r_gobert, j_mcdaniels, k_towns, m_conley]
 timberwolves = Team('Minnesota', minn_lineup)
-print(timberwolves.get_team_lineup_stats())
+print(timberwolves.team_scores())
