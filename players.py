@@ -2,8 +2,7 @@ from nba_api.stats.endpoints import playercareerstats, PlayerDashboardByGameSpli
 from nba_api.stats.static import players
 from nba_api.stats.library.parameters import SeasonAll
 import pandas as pd
-import re
-
+from util import mergeTables
 class Player:
     def __init__(self, name : str, team : str) -> None:
         self.name = name
@@ -110,36 +109,28 @@ class Player:
         min_df.dropna(inplace=True)
         return min_df
 
-    def player_points(self):
+    def player_points(self, stat):
         '''
         TODO get opponents stats, home and away
         '''
         boxscore_df = self.player_career_boxscore()
         pts_df = pd.DataFrame()
-        pts_df['PTS'] = boxscore_df['PTS']
-        pts_df['MIN'] = boxscore_df['MIN']
-        pts_df['FG_PCT'] = boxscore_df['FG_PCT']
-        pts_df['FGM'] = boxscore_df['FGM']
-        pts_df['FGA'] = boxscore_df['FGA']
-        pts_df['FG3_PCT'] = boxscore_df['FG3_PCT']
-        pts_df['FG3M'] = boxscore_df['FG3M']
-        pts_df['FG3A'] = boxscore_df['FG3A']
-        pts_df['FT_PCT'] = boxscore_df['FT_PCT']
+        home_list = ["Away" if '@' in x else "Home" for x in boxscore_df['MATCHUP']]
+        opp_team = []
+        # TODO convert to list comprehension
+        for x in boxscore_df['MATCHUP']:
+            dummy = x.split()
+            opponent = dummy[2]
+            opp_team.append(opponent)
+        pts_df['SEASON_ID'] = boxscore_df['SEASON_ID']
+        pts_df['GAME_DATE'] = boxscore_df['GAME_DATE']
+        pts_df[stat] = boxscore_df[stat]
+        pts_df['LOCATION'] = home_list
+        pts_df['OPPONENT'] = opp_team
         pts_df.dropna(inplace=True)
         return pts_df
         
 
-
-def mergeTables(df1 : pd.DataFrame, df2 : pd.DataFrame) -> pd.DataFrame:
-    """
-    Merges two dataframes into one
-    """
-    result = pd.merge(df1, df2)
-    return result
-    
-
-a_edwards = Player('Anthony Edwards','Minnesota')
-print(a_edwards.player_career_boxscore())
 
 
 

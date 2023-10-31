@@ -1,0 +1,901 @@
+,SEASON_ID,GAME_DATE,PTS,LOCATION,OPPONENT,OPP_EFG_PCT,OPP_FTA_RATE,OPP_OREB_PCT
+0,22023,"OCT 28, 2023",19,Home,MIA,"0    0.561
+Name: OPP_EFG_PCT, dtype: float64","0    0.253
+Name: OPP_FTA_RATE, dtype: float64","0    0.267
+Name: OPP_OREB_PCT, dtype: float64"
+1,22023,"OCT 25, 2023",26,Away,TOR,"0    0.565
+Name: OPP_EFG_PCT, dtype: float64","0    0.28
+Name: OPP_FTA_RATE, dtype: float64","0    0.279
+Name: OPP_OREB_PCT, dtype: float64"
+2,22022,"APR 09, 2023",26,Home,NOP,"0    0.543
+Name: OPP_EFG_PCT, dtype: float64","0    0.272
+Name: OPP_FTA_RATE, dtype: float64","0    0.268
+Name: OPP_OREB_PCT, dtype: float64"
+3,22022,"APR 08, 2023",33,Away,SAS,"0    0.576
+Name: OPP_EFG_PCT, dtype: float64","0    0.26
+Name: OPP_FTA_RATE, dtype: float64","0    0.291
+Name: OPP_OREB_PCT, dtype: float64"
+4,22022,"APR 04, 2023",23,Away,BKN,"0    0.53
+Name: OPP_EFG_PCT, dtype: float64","0    0.276
+Name: OPP_FTA_RATE, dtype: float64","0    0.311
+Name: OPP_OREB_PCT, dtype: float64"
+5,22022,"APR 02, 2023",37,Home,POR,"0    0.563
+Name: OPP_EFG_PCT, dtype: float64","0    0.276
+Name: OPP_FTA_RATE, dtype: float64","0    0.291
+Name: OPP_OREB_PCT, dtype: float64"
+6,22022,"MAR 31, 2023",11,Home,LAL,"0    0.535
+Name: OPP_EFG_PCT, dtype: float64","0    0.222
+Name: OPP_FTA_RATE, dtype: float64","0    0.273
+Name: OPP_OREB_PCT, dtype: float64"
+7,22022,"MAR 29, 2023",31,Away,PHX,"0    0.532
+Name: OPP_EFG_PCT, dtype: float64","0    0.298
+Name: OPP_FTA_RATE, dtype: float64","0    0.286
+Name: OPP_OREB_PCT, dtype: float64"
+8,22022,"MAR 27, 2023",17,Away,SAC,"0    0.563
+Name: OPP_EFG_PCT, dtype: float64","0    0.258
+Name: OPP_FTA_RATE, dtype: float64","0    0.269
+Name: OPP_OREB_PCT, dtype: float64"
+9,22022,"MAR 26, 2023",13,Away,GSW,"0    0.54
+Name: OPP_EFG_PCT, dtype: float64","0    0.278
+Name: OPP_FTA_RATE, dtype: float64","0    0.281
+Name: OPP_OREB_PCT, dtype: float64"
+10,22022,"MAR 17, 2023",8,Away,CHI,"0    0.544
+Name: OPP_EFG_PCT, dtype: float64","0    0.253
+Name: OPP_FTA_RATE, dtype: float64","0    0.264
+Name: OPP_OREB_PCT, dtype: float64"
+11,22022,"MAR 15, 2023",28,Home,BOS,"0    0.528
+Name: OPP_EFG_PCT, dtype: float64","0    0.234
+Name: OPP_FTA_RATE, dtype: float64","0    0.254
+Name: OPP_OREB_PCT, dtype: float64"
+12,22022,"MAR 13, 2023",32,Away,ATL,"0    0.552
+Name: OPP_EFG_PCT, dtype: float64","0    0.257
+Name: OPP_FTA_RATE, dtype: float64","0    0.283
+Name: OPP_OREB_PCT, dtype: float64"
+13,22022,"MAR 10, 2023",32,Home,BKN,"0    0.53
+Name: OPP_EFG_PCT, dtype: float64","0    0.276
+Name: OPP_FTA_RATE, dtype: float64","0    0.311
+Name: OPP_OREB_PCT, dtype: float64"
+14,22022,"MAR 07, 2023",32,Home,PHI,"0    0.541
+Name: OPP_EFG_PCT, dtype: float64","0    0.277
+Name: OPP_FTA_RATE, dtype: float64","0    0.279
+Name: OPP_OREB_PCT, dtype: float64"
+15,22022,"MAR 04, 2023",27,Away,SAC,"0    0.563
+Name: OPP_EFG_PCT, dtype: float64","0    0.258
+Name: OPP_FTA_RATE, dtype: float64","0    0.269
+Name: OPP_OREB_PCT, dtype: float64"
+16,22022,"MAR 03, 2023",19,Away,LAL,"0    0.535
+Name: OPP_EFG_PCT, dtype: float64","0    0.222
+Name: OPP_FTA_RATE, dtype: float64","0    0.273
+Name: OPP_OREB_PCT, dtype: float64"
+17,22022,"FEB 28, 2023",18,Away,LAC,"0    0.543
+Name: OPP_EFG_PCT, dtype: float64","0    0.253
+Name: OPP_FTA_RATE, dtype: float64","0    0.269
+Name: OPP_OREB_PCT, dtype: float64"
+18,22022,"FEB 26, 2023",12,Away,GSW,"0    0.54
+Name: OPP_EFG_PCT, dtype: float64","0    0.278
+Name: OPP_FTA_RATE, dtype: float64","0    0.281
+Name: OPP_OREB_PCT, dtype: float64"
+19,22022,"FEB 24, 2023",29,Home,CHA,"0    0.544
+Name: OPP_EFG_PCT, dtype: float64","0    0.266
+Name: OPP_FTA_RATE, dtype: float64","0    0.283
+Name: OPP_OREB_PCT, dtype: float64"
+20,22022,"FEB 16, 2023",34,Home,WAS,"0    0.54
+Name: OPP_EFG_PCT, dtype: float64","0    0.244
+Name: OPP_FTA_RATE, dtype: float64","0    0.276
+Name: OPP_OREB_PCT, dtype: float64"
+21,22022,"FEB 13, 2023",32,Away,DAL,"0    0.549
+Name: OPP_EFG_PCT, dtype: float64","0    0.29
+Name: OPP_FTA_RATE, dtype: float64","0    0.283
+Name: OPP_OREB_PCT, dtype: float64"
+22,22022,"FEB 10, 2023",17,Away,MEM,"0    0.526
+Name: OPP_EFG_PCT, dtype: float64","0    0.262
+Name: OPP_FTA_RATE, dtype: float64","0    0.289
+Name: OPP_OREB_PCT, dtype: float64"
+23,22022,"FEB 08, 2023",31,Away,UTA,"0    0.541
+Name: OPP_EFG_PCT, dtype: float64","0    0.265
+Name: OPP_FTA_RATE, dtype: float64","0    0.289
+Name: OPP_OREB_PCT, dtype: float64"
+24,22022,"FEB 07, 2023",19,Away,DEN,"0    0.543
+Name: OPP_EFG_PCT, dtype: float64","0    0.26
+Name: OPP_FTA_RATE, dtype: float64","0    0.273
+Name: OPP_OREB_PCT, dtype: float64"
+25,22022,"FEB 05, 2023",20,Home,DEN,"0    0.543
+Name: OPP_EFG_PCT, dtype: float64","0    0.26
+Name: OPP_FTA_RATE, dtype: float64","0    0.273
+Name: OPP_OREB_PCT, dtype: float64"
+26,22022,"FEB 03, 2023",19,Home,ORL,"0    0.55
+Name: OPP_EFG_PCT, dtype: float64","0    0.265
+Name: OPP_FTA_RATE, dtype: float64","0    0.27
+Name: OPP_OREB_PCT, dtype: float64"
+27,22022,"FEB 01, 2023",27,Home,GSW,"0    0.54
+Name: OPP_EFG_PCT, dtype: float64","0    0.278
+Name: OPP_FTA_RATE, dtype: float64","0    0.281
+Name: OPP_OREB_PCT, dtype: float64"
+28,22022,"JAN 30, 2023",33,Home,SAC,"0    0.563
+Name: OPP_EFG_PCT, dtype: float64","0    0.258
+Name: OPP_FTA_RATE, dtype: float64","0    0.269
+Name: OPP_OREB_PCT, dtype: float64"
+29,22022,"JAN 28, 2023",34,Home,SAC,"0    0.563
+Name: OPP_EFG_PCT, dtype: float64","0    0.258
+Name: OPP_FTA_RATE, dtype: float64","0    0.269
+Name: OPP_OREB_PCT, dtype: float64"
+30,22022,"JAN 27, 2023",25,Home,MEM,"0    0.526
+Name: OPP_EFG_PCT, dtype: float64","0    0.262
+Name: OPP_FTA_RATE, dtype: float64","0    0.289
+Name: OPP_OREB_PCT, dtype: float64"
+31,22022,"JAN 25, 2023",37,Away,NOP,"0    0.543
+Name: OPP_EFG_PCT, dtype: float64","0    0.272
+Name: OPP_FTA_RATE, dtype: float64","0    0.268
+Name: OPP_OREB_PCT, dtype: float64"
+32,22022,"JAN 23, 2023",31,Away,HOU,"0    0.564
+Name: OPP_EFG_PCT, dtype: float64","0    0.275
+Name: OPP_FTA_RATE, dtype: float64","0    0.271
+Name: OPP_OREB_PCT, dtype: float64"
+33,22022,"JAN 21, 2023",44,Home,HOU,"0    0.564
+Name: OPP_EFG_PCT, dtype: float64","0    0.275
+Name: OPP_FTA_RATE, dtype: float64","0    0.271
+Name: OPP_OREB_PCT, dtype: float64"
+34,22022,"JAN 19, 2023",23,Home,TOR,"0    0.565
+Name: OPP_EFG_PCT, dtype: float64","0    0.28
+Name: OPP_FTA_RATE, dtype: float64","0    0.279
+Name: OPP_OREB_PCT, dtype: float64"
+35,22022,"JAN 18, 2023",16,Away,DEN,"0    0.543
+Name: OPP_EFG_PCT, dtype: float64","0    0.26
+Name: OPP_FTA_RATE, dtype: float64","0    0.273
+Name: OPP_OREB_PCT, dtype: float64"
+36,22022,"JAN 16, 2023",29,Home,UTA,"0    0.541
+Name: OPP_EFG_PCT, dtype: float64","0    0.265
+Name: OPP_FTA_RATE, dtype: float64","0    0.289
+Name: OPP_OREB_PCT, dtype: float64"
+37,22022,"JAN 14, 2023",26,Home,CLE,"0    0.535
+Name: OPP_EFG_PCT, dtype: float64","0    0.268
+Name: OPP_FTA_RATE, dtype: float64","0    0.285
+Name: OPP_OREB_PCT, dtype: float64"
+38,22022,"JAN 13, 2023",31,Home,PHX,"0    0.532
+Name: OPP_EFG_PCT, dtype: float64","0    0.298
+Name: OPP_FTA_RATE, dtype: float64","0    0.286
+Name: OPP_OREB_PCT, dtype: float64"
+39,22022,"JAN 11, 2023",20,Away,DET,"0    0.557
+Name: OPP_EFG_PCT, dtype: float64","0    0.298
+Name: OPP_FTA_RATE, dtype: float64","0    0.298
+Name: OPP_OREB_PCT, dtype: float64"
+40,22022,"JAN 08, 2023",21,Away,HOU,"0    0.564
+Name: OPP_EFG_PCT, dtype: float64","0    0.275
+Name: OPP_FTA_RATE, dtype: float64","0    0.271
+Name: OPP_OREB_PCT, dtype: float64"
+41,22022,"JAN 06, 2023",5,Home,LAC,"0    0.543
+Name: OPP_EFG_PCT, dtype: float64","0    0.253
+Name: OPP_FTA_RATE, dtype: float64","0    0.269
+Name: OPP_OREB_PCT, dtype: float64"
+42,22022,"JAN 04, 2023",32,Home,POR,"0    0.563
+Name: OPP_EFG_PCT, dtype: float64","0    0.276
+Name: OPP_FTA_RATE, dtype: float64","0    0.291
+Name: OPP_OREB_PCT, dtype: float64"
+43,22022,"JAN 02, 2023",29,Home,DEN,"0    0.543
+Name: OPP_EFG_PCT, dtype: float64","0    0.26
+Name: OPP_FTA_RATE, dtype: float64","0    0.273
+Name: OPP_OREB_PCT, dtype: float64"
+44,22022,"DEC 31, 2022",30,Home,DET,"0    0.557
+Name: OPP_EFG_PCT, dtype: float64","0    0.298
+Name: OPP_FTA_RATE, dtype: float64","0    0.298
+Name: OPP_OREB_PCT, dtype: float64"
+45,22022,"DEC 30, 2022",30,Away,MIL,"0    0.52
+Name: OPP_EFG_PCT, dtype: float64","0    0.225
+Name: OPP_FTA_RATE, dtype: float64","0    0.255
+Name: OPP_OREB_PCT, dtype: float64"
+46,22022,"DEC 28, 2022",27,Away,NOP,"0    0.543
+Name: OPP_EFG_PCT, dtype: float64","0    0.272
+Name: OPP_FTA_RATE, dtype: float64","0    0.268
+Name: OPP_OREB_PCT, dtype: float64"
+47,22022,"DEC 26, 2022",29,Away,MIA,"0    0.561
+Name: OPP_EFG_PCT, dtype: float64","0    0.253
+Name: OPP_FTA_RATE, dtype: float64","0    0.267
+Name: OPP_OREB_PCT, dtype: float64"
+48,22022,"DEC 23, 2022",30,Away,BOS,"0    0.528
+Name: OPP_EFG_PCT, dtype: float64","0    0.234
+Name: OPP_FTA_RATE, dtype: float64","0    0.254
+Name: OPP_OREB_PCT, dtype: float64"
+49,22022,"DEC 21, 2022",23,Home,DAL,"0    0.549
+Name: OPP_EFG_PCT, dtype: float64","0    0.29
+Name: OPP_FTA_RATE, dtype: float64","0    0.283
+Name: OPP_OREB_PCT, dtype: float64"
+50,22022,"DEC 19, 2022",27,Home,DAL,"0    0.549
+Name: OPP_EFG_PCT, dtype: float64","0    0.29
+Name: OPP_FTA_RATE, dtype: float64","0    0.283
+Name: OPP_OREB_PCT, dtype: float64"
+51,22022,"DEC 18, 2022",37,Home,CHI,"0    0.544
+Name: OPP_EFG_PCT, dtype: float64","0    0.253
+Name: OPP_FTA_RATE, dtype: float64","0    0.264
+Name: OPP_OREB_PCT, dtype: float64"
+52,22022,"DEC 16, 2022",19,Away,OKC,"0    0.547
+Name: OPP_EFG_PCT, dtype: float64","0    0.288
+Name: OPP_FTA_RATE, dtype: float64","0    0.307
+Name: OPP_OREB_PCT, dtype: float64"
+53,22022,"DEC 14, 2022",19,Away,LAC,"0    0.543
+Name: OPP_EFG_PCT, dtype: float64","0    0.253
+Name: OPP_FTA_RATE, dtype: float64","0    0.269
+Name: OPP_OREB_PCT, dtype: float64"
+54,22022,"DEC 12, 2022",17,Away,POR,"0    0.563
+Name: OPP_EFG_PCT, dtype: float64","0    0.276
+Name: OPP_FTA_RATE, dtype: float64","0    0.291
+Name: OPP_OREB_PCT, dtype: float64"
+55,22022,"DEC 10, 2022",26,Away,POR,"0    0.563
+Name: OPP_EFG_PCT, dtype: float64","0    0.276
+Name: OPP_FTA_RATE, dtype: float64","0    0.291
+Name: OPP_OREB_PCT, dtype: float64"
+56,22022,"DEC 09, 2022",14,Away,UTA,"0    0.541
+Name: OPP_EFG_PCT, dtype: float64","0    0.265
+Name: OPP_FTA_RATE, dtype: float64","0    0.289
+Name: OPP_OREB_PCT, dtype: float64"
+57,22022,"DEC 07, 2022",26,Home,IND,"0    0.554
+Name: OPP_EFG_PCT, dtype: float64","0    0.287
+Name: OPP_FTA_RATE, dtype: float64","0    0.315
+Name: OPP_OREB_PCT, dtype: float64"
+58,22022,"DEC 03, 2022",26,Home,OKC,"0    0.547
+Name: OPP_EFG_PCT, dtype: float64","0    0.288
+Name: OPP_FTA_RATE, dtype: float64","0    0.307
+Name: OPP_OREB_PCT, dtype: float64"
+59,22022,"NOV 30, 2022",29,Home,MEM,"0    0.526
+Name: OPP_EFG_PCT, dtype: float64","0    0.262
+Name: OPP_FTA_RATE, dtype: float64","0    0.289
+Name: OPP_OREB_PCT, dtype: float64"
+60,22022,"NOV 28, 2022",29,Away,WAS,"0    0.54
+Name: OPP_EFG_PCT, dtype: float64","0    0.244
+Name: OPP_FTA_RATE, dtype: float64","0    0.276
+Name: OPP_OREB_PCT, dtype: float64"
+61,22022,"NOV 27, 2022",26,Home,GSW,"0    0.54
+Name: OPP_EFG_PCT, dtype: float64","0    0.278
+Name: OPP_FTA_RATE, dtype: float64","0    0.281
+Name: OPP_OREB_PCT, dtype: float64"
+62,22022,"NOV 25, 2022",25,Away,CHA,"0    0.544
+Name: OPP_EFG_PCT, dtype: float64","0    0.266
+Name: OPP_FTA_RATE, dtype: float64","0    0.283
+Name: OPP_OREB_PCT, dtype: float64"
+63,22022,"NOV 23, 2022",19,Away,IND,"0    0.554
+Name: OPP_EFG_PCT, dtype: float64","0    0.287
+Name: OPP_FTA_RATE, dtype: float64","0    0.315
+Name: OPP_OREB_PCT, dtype: float64"
+64,22022,"NOV 21, 2022",22,Home,MIA,"0    0.561
+Name: OPP_EFG_PCT, dtype: float64","0    0.253
+Name: OPP_FTA_RATE, dtype: float64","0    0.267
+Name: OPP_OREB_PCT, dtype: float64"
+65,22022,"NOV 19, 2022",25,Away,PHI,"0    0.541
+Name: OPP_EFG_PCT, dtype: float64","0    0.277
+Name: OPP_FTA_RATE, dtype: float64","0    0.279
+Name: OPP_OREB_PCT, dtype: float64"
+66,22022,"NOV 16, 2022",35,Away,ORL,"0    0.55
+Name: OPP_EFG_PCT, dtype: float64","0    0.265
+Name: OPP_FTA_RATE, dtype: float64","0    0.27
+Name: OPP_OREB_PCT, dtype: float64"
+67,22022,"NOV 13, 2022",10,Away,CLE,"0    0.535
+Name: OPP_EFG_PCT, dtype: float64","0    0.268
+Name: OPP_FTA_RATE, dtype: float64","0    0.285
+Name: OPP_OREB_PCT, dtype: float64"
+68,22022,"NOV 11, 2022",28,Away,MEM,"0    0.526
+Name: OPP_EFG_PCT, dtype: float64","0    0.262
+Name: OPP_FTA_RATE, dtype: float64","0    0.289
+Name: OPP_OREB_PCT, dtype: float64"
+69,22022,"NOV 09, 2022",11,Home,PHX,"0    0.532
+Name: OPP_EFG_PCT, dtype: float64","0    0.298
+Name: OPP_FTA_RATE, dtype: float64","0    0.286
+Name: OPP_OREB_PCT, dtype: float64"
+70,22022,"NOV 07, 2022",16,Home,NYK,"0    0.536
+Name: OPP_EFG_PCT, dtype: float64","0    0.269
+Name: OPP_FTA_RATE, dtype: float64","0    0.273
+Name: OPP_OREB_PCT, dtype: float64"
+71,22022,"NOV 05, 2022",19,Home,HOU,"0    0.564
+Name: OPP_EFG_PCT, dtype: float64","0    0.275
+Name: OPP_FTA_RATE, dtype: float64","0    0.271
+Name: OPP_OREB_PCT, dtype: float64"
+72,22022,"NOV 04, 2022",24,Home,MIL,"0    0.52
+Name: OPP_EFG_PCT, dtype: float64","0    0.225
+Name: OPP_FTA_RATE, dtype: float64","0    0.255
+Name: OPP_OREB_PCT, dtype: float64"
+73,22022,"NOV 01, 2022",24,Away,PHX,"0    0.532
+Name: OPP_EFG_PCT, dtype: float64","0    0.298
+Name: OPP_FTA_RATE, dtype: float64","0    0.286
+Name: OPP_OREB_PCT, dtype: float64"
+74,22022,"OCT 30, 2022",18,Away,SAS,"0    0.576
+Name: OPP_EFG_PCT, dtype: float64","0    0.26
+Name: OPP_FTA_RATE, dtype: float64","0    0.291
+Name: OPP_OREB_PCT, dtype: float64"
+75,22022,"OCT 28, 2022",29,Home,LAL,"0    0.535
+Name: OPP_EFG_PCT, dtype: float64","0    0.222
+Name: OPP_FTA_RATE, dtype: float64","0    0.273
+Name: OPP_OREB_PCT, dtype: float64"
+76,22022,"OCT 26, 2022",34,Home,SAS,"0    0.576
+Name: OPP_EFG_PCT, dtype: float64","0    0.26
+Name: OPP_FTA_RATE, dtype: float64","0    0.291
+Name: OPP_OREB_PCT, dtype: float64"
+77,22022,"OCT 24, 2022",9,Home,SAS,"0    0.576
+Name: OPP_EFG_PCT, dtype: float64","0    0.26
+Name: OPP_FTA_RATE, dtype: float64","0    0.291
+Name: OPP_OREB_PCT, dtype: float64"
+78,22022,"OCT 23, 2022",30,Away,OKC,"0    0.547
+Name: OPP_EFG_PCT, dtype: float64","0    0.288
+Name: OPP_FTA_RATE, dtype: float64","0    0.307
+Name: OPP_OREB_PCT, dtype: float64"
+79,22022,"OCT 21, 2022",30,Home,UTA,"0    0.541
+Name: OPP_EFG_PCT, dtype: float64","0    0.265
+Name: OPP_FTA_RATE, dtype: float64","0    0.289
+Name: OPP_OREB_PCT, dtype: float64"
+80,22022,"OCT 19, 2022",11,Home,OKC,"0    0.547
+Name: OPP_EFG_PCT, dtype: float64","0    0.288
+Name: OPP_FTA_RATE, dtype: float64","0    0.307
+Name: OPP_OREB_PCT, dtype: float64"
+81,22021,"APR 10, 2022",8,Home,CHI,"0    0.544
+Name: OPP_EFG_PCT, dtype: float64","0    0.253
+Name: OPP_FTA_RATE, dtype: float64","0    0.264
+Name: OPP_OREB_PCT, dtype: float64"
+82,22021,"APR 07, 2022",49,Home,SAS,"0    0.576
+Name: OPP_EFG_PCT, dtype: float64","0    0.26
+Name: OPP_FTA_RATE, dtype: float64","0    0.291
+Name: OPP_OREB_PCT, dtype: float64"
+83,22021,"APR 05, 2022",18,Home,WAS,"0    0.54
+Name: OPP_EFG_PCT, dtype: float64","0    0.244
+Name: OPP_FTA_RATE, dtype: float64","0    0.276
+Name: OPP_OREB_PCT, dtype: float64"
+84,22021,"APR 03, 2022",33,Away,HOU,"0    0.564
+Name: OPP_EFG_PCT, dtype: float64","0    0.275
+Name: OPP_FTA_RATE, dtype: float64","0    0.271
+Name: OPP_OREB_PCT, dtype: float64"
+85,22021,"APR 01, 2022",18,Away,DEN,"0    0.543
+Name: OPP_EFG_PCT, dtype: float64","0    0.26
+Name: OPP_FTA_RATE, dtype: float64","0    0.273
+Name: OPP_OREB_PCT, dtype: float64"
+86,22021,"MAR 30, 2022",24,Away,TOR,"0    0.565
+Name: OPP_EFG_PCT, dtype: float64","0    0.28
+Name: OPP_FTA_RATE, dtype: float64","0    0.279
+Name: OPP_OREB_PCT, dtype: float64"
+87,22021,"MAR 27, 2022",24,Away,BOS,"0    0.528
+Name: OPP_EFG_PCT, dtype: float64","0    0.234
+Name: OPP_FTA_RATE, dtype: float64","0    0.254
+Name: OPP_OREB_PCT, dtype: float64"
+88,22021,"MAR 25, 2022",12,Home,DAL,"0    0.549
+Name: OPP_EFG_PCT, dtype: float64","0    0.29
+Name: OPP_FTA_RATE, dtype: float64","0    0.283
+Name: OPP_OREB_PCT, dtype: float64"
+89,22021,"MAR 23, 2022",19,Home,PHX,"0    0.532
+Name: OPP_EFG_PCT, dtype: float64","0    0.298
+Name: OPP_FTA_RATE, dtype: float64","0    0.286
+Name: OPP_OREB_PCT, dtype: float64"
+90,22021,"MAR 21, 2022",19,Away,DAL,"0    0.549
+Name: OPP_EFG_PCT, dtype: float64","0    0.29
+Name: OPP_FTA_RATE, dtype: float64","0    0.283
+Name: OPP_OREB_PCT, dtype: float64"
+91,22021,"MAR 19, 2022",25,Home,MIL,"0    0.52
+Name: OPP_EFG_PCT, dtype: float64","0    0.225
+Name: OPP_FTA_RATE, dtype: float64","0    0.255
+Name: OPP_OREB_PCT, dtype: float64"
+92,22021,"MAR 16, 2022",27,Home,LAL,"0    0.535
+Name: OPP_EFG_PCT, dtype: float64","0    0.222
+Name: OPP_FTA_RATE, dtype: float64","0    0.273
+Name: OPP_OREB_PCT, dtype: float64"
+93,22021,"MAR 14, 2022",5,Away,SAS,"0    0.576
+Name: OPP_EFG_PCT, dtype: float64","0    0.26
+Name: OPP_FTA_RATE, dtype: float64","0    0.291
+Name: OPP_OREB_PCT, dtype: float64"
+94,22021,"MAR 12, 2022",15,Away,MIA,"0    0.561
+Name: OPP_EFG_PCT, dtype: float64","0    0.253
+Name: OPP_FTA_RATE, dtype: float64","0    0.267
+Name: OPP_OREB_PCT, dtype: float64"
+95,22021,"MAR 11, 2022",25,Away,ORL,"0    0.55
+Name: OPP_EFG_PCT, dtype: float64","0    0.265
+Name: OPP_FTA_RATE, dtype: float64","0    0.27
+Name: OPP_OREB_PCT, dtype: float64"
+96,22021,"MAR 09, 2022",16,Home,OKC,"0    0.547
+Name: OPP_EFG_PCT, dtype: float64","0    0.288
+Name: OPP_FTA_RATE, dtype: float64","0    0.307
+Name: OPP_OREB_PCT, dtype: float64"
+97,22021,"FEB 28, 2022",17,Away,CLE,"0    0.535
+Name: OPP_EFG_PCT, dtype: float64","0    0.268
+Name: OPP_FTA_RATE, dtype: float64","0    0.285
+Name: OPP_OREB_PCT, dtype: float64"
+98,22021,"FEB 25, 2022",15,Home,PHI,"0    0.541
+Name: OPP_EFG_PCT, dtype: float64","0    0.277
+Name: OPP_FTA_RATE, dtype: float64","0    0.279
+Name: OPP_OREB_PCT, dtype: float64"
+99,22021,"FEB 24, 2022",5,Home,MEM,"0    0.526
+Name: OPP_EFG_PCT, dtype: float64","0    0.262
+Name: OPP_FTA_RATE, dtype: float64","0    0.289
+Name: OPP_OREB_PCT, dtype: float64"
+100,22021,"FEB 16, 2022",6,Home,TOR,"0    0.565
+Name: OPP_EFG_PCT, dtype: float64","0    0.28
+Name: OPP_FTA_RATE, dtype: float64","0    0.279
+Name: OPP_OREB_PCT, dtype: float64"
+101,22021,"FEB 15, 2022",9,Home,CHA,"0    0.544
+Name: OPP_EFG_PCT, dtype: float64","0    0.266
+Name: OPP_FTA_RATE, dtype: float64","0    0.283
+Name: OPP_OREB_PCT, dtype: float64"
+102,22021,"FEB 13, 2022",37,Away,IND,"0    0.554
+Name: OPP_EFG_PCT, dtype: float64","0    0.287
+Name: OPP_FTA_RATE, dtype: float64","0    0.315
+Name: OPP_OREB_PCT, dtype: float64"
+103,22021,"FEB 11, 2022",31,Away,CHI,"0    0.544
+Name: OPP_EFG_PCT, dtype: float64","0    0.253
+Name: OPP_FTA_RATE, dtype: float64","0    0.264
+Name: OPP_OREB_PCT, dtype: float64"
+104,22021,"FEB 09, 2022",26,Away,SAC,"0    0.563
+Name: OPP_EFG_PCT, dtype: float64","0    0.258
+Name: OPP_FTA_RATE, dtype: float64","0    0.269
+Name: OPP_OREB_PCT, dtype: float64"
+105,22021,"FEB 08, 2022",5,Away,SAC,"0    0.563
+Name: OPP_EFG_PCT, dtype: float64","0    0.258
+Name: OPP_FTA_RATE, dtype: float64","0    0.269
+Name: OPP_OREB_PCT, dtype: float64"
+106,22021,"FEB 06, 2022",17,Home,DET,"0    0.557
+Name: OPP_EFG_PCT, dtype: float64","0    0.298
+Name: OPP_FTA_RATE, dtype: float64","0    0.298
+Name: OPP_OREB_PCT, dtype: float64"
+107,22021,"FEB 03, 2022",25,Away,DET,"0    0.557
+Name: OPP_EFG_PCT, dtype: float64","0    0.298
+Name: OPP_FTA_RATE, dtype: float64","0    0.298
+Name: OPP_OREB_PCT, dtype: float64"
+108,22021,"FEB 01, 2022",5,Home,DEN,"0    0.543
+Name: OPP_EFG_PCT, dtype: float64","0    0.26
+Name: OPP_FTA_RATE, dtype: float64","0    0.273
+Name: OPP_OREB_PCT, dtype: float64"
+109,22021,"JAN 30, 2022",15,Home,UTA,"0    0.541
+Name: OPP_EFG_PCT, dtype: float64","0    0.265
+Name: OPP_FTA_RATE, dtype: float64","0    0.289
+Name: OPP_OREB_PCT, dtype: float64"
+110,22021,"JAN 28, 2022",27,Away,PHX,"0    0.532
+Name: OPP_EFG_PCT, dtype: float64","0    0.298
+Name: OPP_FTA_RATE, dtype: float64","0    0.286
+Name: OPP_OREB_PCT, dtype: float64"
+111,22021,"JAN 27, 2022",27,Away,GSW,"0    0.54
+Name: OPP_EFG_PCT, dtype: float64","0    0.278
+Name: OPP_FTA_RATE, dtype: float64","0    0.281
+Name: OPP_OREB_PCT, dtype: float64"
+112,22021,"JAN 25, 2022",40,Away,POR,"0    0.563
+Name: OPP_EFG_PCT, dtype: float64","0    0.276
+Name: OPP_FTA_RATE, dtype: float64","0    0.291
+Name: OPP_OREB_PCT, dtype: float64"
+113,22021,"JAN 23, 2022",25,Home,BKN,"0    0.53
+Name: OPP_EFG_PCT, dtype: float64","0    0.276
+Name: OPP_FTA_RATE, dtype: float64","0    0.311
+Name: OPP_OREB_PCT, dtype: float64"
+114,22021,"JAN 19, 2022",20,Away,ATL,"0    0.552
+Name: OPP_EFG_PCT, dtype: float64","0    0.257
+Name: OPP_FTA_RATE, dtype: float64","0    0.283
+Name: OPP_OREB_PCT, dtype: float64"
+115,22021,"JAN 18, 2022",21,Away,NYK,"0    0.536
+Name: OPP_EFG_PCT, dtype: float64","0    0.269
+Name: OPP_FTA_RATE, dtype: float64","0    0.273
+Name: OPP_OREB_PCT, dtype: float64"
+116,22021,"JAN 16, 2022",9,Home,GSW,"0    0.54
+Name: OPP_EFG_PCT, dtype: float64","0    0.278
+Name: OPP_FTA_RATE, dtype: float64","0    0.281
+Name: OPP_OREB_PCT, dtype: float64"
+117,22021,"JAN 13, 2022",30,Away,MEM,"0    0.526
+Name: OPP_EFG_PCT, dtype: float64","0    0.262
+Name: OPP_FTA_RATE, dtype: float64","0    0.289
+Name: OPP_OREB_PCT, dtype: float64"
+118,22021,"JAN 11, 2022",28,Away,NOP,"0    0.543
+Name: OPP_EFG_PCT, dtype: float64","0    0.272
+Name: OPP_FTA_RATE, dtype: float64","0    0.268
+Name: OPP_OREB_PCT, dtype: float64"
+119,22021,"JAN 09, 2022",19,Away,HOU,"0    0.564
+Name: OPP_EFG_PCT, dtype: float64","0    0.275
+Name: OPP_FTA_RATE, dtype: float64","0    0.271
+Name: OPP_OREB_PCT, dtype: float64"
+120,22021,"JAN 07, 2022",24,Away,OKC,"0    0.547
+Name: OPP_EFG_PCT, dtype: float64","0    0.288
+Name: OPP_FTA_RATE, dtype: float64","0    0.307
+Name: OPP_OREB_PCT, dtype: float64"
+121,22021,"JAN 05, 2022",22,Home,OKC,"0    0.547
+Name: OPP_EFG_PCT, dtype: float64","0    0.288
+Name: OPP_FTA_RATE, dtype: float64","0    0.307
+Name: OPP_OREB_PCT, dtype: float64"
+122,22021,"JAN 03, 2022",28,Away,LAC,"0    0.543
+Name: OPP_EFG_PCT, dtype: float64","0    0.253
+Name: OPP_FTA_RATE, dtype: float64","0    0.269
+Name: OPP_OREB_PCT, dtype: float64"
+123,22021,"JAN 02, 2022",18,Away,LAL,"0    0.535
+Name: OPP_EFG_PCT, dtype: float64","0    0.222
+Name: OPP_FTA_RATE, dtype: float64","0    0.273
+Name: OPP_OREB_PCT, dtype: float64"
+124,22021,"DEC 31, 2021",26,Away,UTA,"0    0.541
+Name: OPP_EFG_PCT, dtype: float64","0    0.265
+Name: OPP_FTA_RATE, dtype: float64","0    0.289
+Name: OPP_OREB_PCT, dtype: float64"
+125,22021,"DEC 15, 2021",38,Away,DEN,"0    0.543
+Name: OPP_EFG_PCT, dtype: float64","0    0.26
+Name: OPP_FTA_RATE, dtype: float64","0    0.273
+Name: OPP_OREB_PCT, dtype: float64"
+126,22021,"DEC 12, 2021",24,Away,POR,"0    0.563
+Name: OPP_EFG_PCT, dtype: float64","0    0.276
+Name: OPP_FTA_RATE, dtype: float64","0    0.291
+Name: OPP_OREB_PCT, dtype: float64"
+127,22021,"DEC 10, 2021",13,Home,CLE,"0    0.535
+Name: OPP_EFG_PCT, dtype: float64","0    0.268
+Name: OPP_FTA_RATE, dtype: float64","0    0.285
+Name: OPP_OREB_PCT, dtype: float64"
+128,22021,"DEC 08, 2021",18,Home,UTA,"0    0.541
+Name: OPP_EFG_PCT, dtype: float64","0    0.265
+Name: OPP_FTA_RATE, dtype: float64","0    0.289
+Name: OPP_OREB_PCT, dtype: float64"
+129,22021,"DEC 06, 2021",20,Home,ATL,"0    0.552
+Name: OPP_EFG_PCT, dtype: float64","0    0.257
+Name: OPP_FTA_RATE, dtype: float64","0    0.283
+Name: OPP_OREB_PCT, dtype: float64"
+130,22021,"DEC 03, 2021",19,Away,BKN,"0    0.53
+Name: OPP_EFG_PCT, dtype: float64","0    0.276
+Name: OPP_FTA_RATE, dtype: float64","0    0.311
+Name: OPP_OREB_PCT, dtype: float64"
+131,22021,"DEC 01, 2021",25,Away,WAS,"0    0.54
+Name: OPP_EFG_PCT, dtype: float64","0    0.244
+Name: OPP_FTA_RATE, dtype: float64","0    0.276
+Name: OPP_OREB_PCT, dtype: float64"
+132,22021,"NOV 29, 2021",21,Home,IND,"0    0.554
+Name: OPP_EFG_PCT, dtype: float64","0    0.287
+Name: OPP_FTA_RATE, dtype: float64","0    0.315
+Name: OPP_OREB_PCT, dtype: float64"
+133,22021,"NOV 27, 2021",19,Away,PHI,"0    0.541
+Name: OPP_EFG_PCT, dtype: float64","0    0.277
+Name: OPP_FTA_RATE, dtype: float64","0    0.279
+Name: OPP_OREB_PCT, dtype: float64"
+134,22021,"NOV 26, 2021",11,Away,CHA,"0    0.544
+Name: OPP_EFG_PCT, dtype: float64","0    0.266
+Name: OPP_FTA_RATE, dtype: float64","0    0.283
+Name: OPP_OREB_PCT, dtype: float64"
+135,22021,"NOV 24, 2021",33,Home,MIA,"0    0.561
+Name: OPP_EFG_PCT, dtype: float64","0    0.253
+Name: OPP_FTA_RATE, dtype: float64","0    0.267
+Name: OPP_OREB_PCT, dtype: float64"
+136,22021,"NOV 22, 2021",18,Away,NOP,"0    0.543
+Name: OPP_EFG_PCT, dtype: float64","0    0.272
+Name: OPP_FTA_RATE, dtype: float64","0    0.268
+Name: OPP_OREB_PCT, dtype: float64"
+137,22021,"NOV 20, 2021",23,Home,MEM,"0    0.526
+Name: OPP_EFG_PCT, dtype: float64","0    0.262
+Name: OPP_FTA_RATE, dtype: float64","0    0.289
+Name: OPP_OREB_PCT, dtype: float64"
+138,22021,"NOV 18, 2021",13,Home,SAS,"0    0.576
+Name: OPP_EFG_PCT, dtype: float64","0    0.26
+Name: OPP_FTA_RATE, dtype: float64","0    0.291
+Name: OPP_OREB_PCT, dtype: float64"
+139,22021,"NOV 17, 2021",26,Home,SAC,"0    0.563
+Name: OPP_EFG_PCT, dtype: float64","0    0.258
+Name: OPP_FTA_RATE, dtype: float64","0    0.269
+Name: OPP_OREB_PCT, dtype: float64"
+140,22021,"NOV 15, 2021",9,Home,PHX,"0    0.532
+Name: OPP_EFG_PCT, dtype: float64","0    0.298
+Name: OPP_FTA_RATE, dtype: float64","0    0.286
+Name: OPP_OREB_PCT, dtype: float64"
+141,22021,"NOV 13, 2021",21,Away,LAC,"0    0.543
+Name: OPP_EFG_PCT, dtype: float64","0    0.253
+Name: OPP_FTA_RATE, dtype: float64","0    0.269
+Name: OPP_OREB_PCT, dtype: float64"
+142,22021,"NOV 12, 2021",9,Away,LAL,"0    0.535
+Name: OPP_EFG_PCT, dtype: float64","0    0.222
+Name: OPP_FTA_RATE, dtype: float64","0    0.273
+Name: OPP_OREB_PCT, dtype: float64"
+143,22021,"NOV 10, 2021",48,Away,GSW,"0    0.54
+Name: OPP_EFG_PCT, dtype: float64","0    0.278
+Name: OPP_FTA_RATE, dtype: float64","0    0.281
+Name: OPP_OREB_PCT, dtype: float64"
+144,22021,"NOV 08, 2021",27,Away,MEM,"0    0.526
+Name: OPP_EFG_PCT, dtype: float64","0    0.262
+Name: OPP_FTA_RATE, dtype: float64","0    0.289
+Name: OPP_OREB_PCT, dtype: float64"
+145,22021,"NOV 05, 2021",17,Home,LAC,"0    0.543
+Name: OPP_EFG_PCT, dtype: float64","0    0.253
+Name: OPP_FTA_RATE, dtype: float64","0    0.269
+Name: OPP_OREB_PCT, dtype: float64"
+146,22021,"NOV 03, 2021",28,Home,LAC,"0    0.543
+Name: OPP_EFG_PCT, dtype: float64","0    0.253
+Name: OPP_FTA_RATE, dtype: float64","0    0.269
+Name: OPP_OREB_PCT, dtype: float64"
+147,22021,"NOV 01, 2021",24,Home,ORL,"0    0.55
+Name: OPP_EFG_PCT, dtype: float64","0    0.265
+Name: OPP_FTA_RATE, dtype: float64","0    0.27
+Name: OPP_OREB_PCT, dtype: float64"
+148,22021,"OCT 30, 2021",14,Home,DEN,"0    0.543
+Name: OPP_EFG_PCT, dtype: float64","0    0.26
+Name: OPP_FTA_RATE, dtype: float64","0    0.273
+Name: OPP_OREB_PCT, dtype: float64"
+149,22021,"OCT 27, 2021",25,Away,MIL,"0    0.52
+Name: OPP_EFG_PCT, dtype: float64","0    0.225
+Name: OPP_FTA_RATE, dtype: float64","0    0.255
+Name: OPP_OREB_PCT, dtype: float64"
+150,22021,"OCT 25, 2021",28,Home,NOP,"0    0.543
+Name: OPP_EFG_PCT, dtype: float64","0    0.272
+Name: OPP_FTA_RATE, dtype: float64","0    0.268
+Name: OPP_OREB_PCT, dtype: float64"
+151,22021,"OCT 23, 2021",19,Home,NOP,"0    0.543
+Name: OPP_EFG_PCT, dtype: float64","0    0.272
+Name: OPP_FTA_RATE, dtype: float64","0    0.268
+Name: OPP_OREB_PCT, dtype: float64"
+152,22021,"OCT 20, 2021",29,Home,HOU,"0    0.564
+Name: OPP_EFG_PCT, dtype: float64","0    0.275
+Name: OPP_FTA_RATE, dtype: float64","0    0.271
+Name: OPP_OREB_PCT, dtype: float64"
+153,22020,"MAY 16, 2021",30,Home,DAL,"0    0.549
+Name: OPP_EFG_PCT, dtype: float64","0    0.29
+Name: OPP_FTA_RATE, dtype: float64","0    0.283
+Name: OPP_OREB_PCT, dtype: float64"
+154,22020,"MAY 15, 2021",23,Home,BOS,"0    0.528
+Name: OPP_EFG_PCT, dtype: float64","0    0.234
+Name: OPP_FTA_RATE, dtype: float64","0    0.254
+Name: OPP_OREB_PCT, dtype: float64"
+155,22020,"MAY 13, 2021",29,Home,DEN,"0    0.543
+Name: OPP_EFG_PCT, dtype: float64","0    0.26
+Name: OPP_FTA_RATE, dtype: float64","0    0.273
+Name: OPP_OREB_PCT, dtype: float64"
+156,22020,"MAY 11, 2021",22,Away,DET,"0    0.557
+Name: OPP_EFG_PCT, dtype: float64","0    0.298
+Name: OPP_FTA_RATE, dtype: float64","0    0.298
+Name: OPP_OREB_PCT, dtype: float64"
+157,22020,"MAY 09, 2021",16,Away,ORL,"0    0.55
+Name: OPP_EFG_PCT, dtype: float64","0    0.265
+Name: OPP_FTA_RATE, dtype: float64","0    0.27
+Name: OPP_OREB_PCT, dtype: float64"
+158,22020,"MAY 07, 2021",25,Away,MIA,"0    0.561
+Name: OPP_EFG_PCT, dtype: float64","0    0.253
+Name: OPP_FTA_RATE, dtype: float64","0    0.267
+Name: OPP_OREB_PCT, dtype: float64"
+159,22020,"MAY 05, 2021",42,Home,MEM,"0    0.526
+Name: OPP_EFG_PCT, dtype: float64","0    0.262
+Name: OPP_FTA_RATE, dtype: float64","0    0.289
+Name: OPP_OREB_PCT, dtype: float64"
+160,22020,"MAY 01, 2021",29,Home,NOP,"0    0.543
+Name: OPP_EFG_PCT, dtype: float64","0    0.272
+Name: OPP_FTA_RATE, dtype: float64","0    0.268
+Name: OPP_OREB_PCT, dtype: float64"
+161,22020,"APR 29, 2021",25,Home,GSW,"0    0.54
+Name: OPP_EFG_PCT, dtype: float64","0    0.278
+Name: OPP_FTA_RATE, dtype: float64","0    0.281
+Name: OPP_OREB_PCT, dtype: float64"
+162,22020,"APR 27, 2021",19,Away,HOU,"0    0.564
+Name: OPP_EFG_PCT, dtype: float64","0    0.275
+Name: OPP_FTA_RATE, dtype: float64","0    0.271
+Name: OPP_OREB_PCT, dtype: float64"
+163,22020,"APR 26, 2021",14,Home,UTA,"0    0.541
+Name: OPP_EFG_PCT, dtype: float64","0    0.265
+Name: OPP_FTA_RATE, dtype: float64","0    0.289
+Name: OPP_OREB_PCT, dtype: float64"
+164,22020,"APR 24, 2021",23,Away,UTA,"0    0.541
+Name: OPP_EFG_PCT, dtype: float64","0    0.265
+Name: OPP_FTA_RATE, dtype: float64","0    0.289
+Name: OPP_OREB_PCT, dtype: float64"
+165,22020,"APR 21, 2021",16,Away,SAC,"0    0.563
+Name: OPP_EFG_PCT, dtype: float64","0    0.258
+Name: OPP_FTA_RATE, dtype: float64","0    0.269
+Name: OPP_OREB_PCT, dtype: float64"
+166,22020,"APR 20, 2021",28,Away,SAC,"0    0.563
+Name: OPP_EFG_PCT, dtype: float64","0    0.258
+Name: OPP_FTA_RATE, dtype: float64","0    0.269
+Name: OPP_OREB_PCT, dtype: float64"
+167,22020,"APR 18, 2021",23,Away,LAC,"0    0.543
+Name: OPP_EFG_PCT, dtype: float64","0    0.253
+Name: OPP_FTA_RATE, dtype: float64","0    0.269
+Name: OPP_OREB_PCT, dtype: float64"
+168,22020,"APR 16, 2021",12,Home,MIA,"0    0.561
+Name: OPP_EFG_PCT, dtype: float64","0    0.253
+Name: OPP_FTA_RATE, dtype: float64","0    0.267
+Name: OPP_OREB_PCT, dtype: float64"
+169,22020,"APR 14, 2021",24,Home,MIL,"0    0.52
+Name: OPP_EFG_PCT, dtype: float64","0    0.225
+Name: OPP_FTA_RATE, dtype: float64","0    0.255
+Name: OPP_OREB_PCT, dtype: float64"
+170,22020,"APR 13, 2021",27,Home,BKN,"0    0.53
+Name: OPP_EFG_PCT, dtype: float64","0    0.276
+Name: OPP_FTA_RATE, dtype: float64","0    0.311
+Name: OPP_OREB_PCT, dtype: float64"
+171,22020,"APR 11, 2021",15,Home,CHI,"0    0.544
+Name: OPP_EFG_PCT, dtype: float64","0    0.253
+Name: OPP_FTA_RATE, dtype: float64","0    0.264
+Name: OPP_OREB_PCT, dtype: float64"
+172,22020,"APR 09, 2021",24,Away,BOS,"0    0.528
+Name: OPP_EFG_PCT, dtype: float64","0    0.234
+Name: OPP_FTA_RATE, dtype: float64","0    0.254
+Name: OPP_OREB_PCT, dtype: float64"
+173,22020,"APR 07, 2021",27,Away,IND,"0    0.554
+Name: OPP_EFG_PCT, dtype: float64","0    0.287
+Name: OPP_FTA_RATE, dtype: float64","0    0.315
+Name: OPP_OREB_PCT, dtype: float64"
+174,22020,"APR 05, 2021",19,Home,SAC,"0    0.563
+Name: OPP_EFG_PCT, dtype: float64","0    0.258
+Name: OPP_FTA_RATE, dtype: float64","0    0.269
+Name: OPP_OREB_PCT, dtype: float64"
+175,22020,"APR 03, 2021",27,Away,PHI,"0    0.541
+Name: OPP_EFG_PCT, dtype: float64","0    0.277
+Name: OPP_FTA_RATE, dtype: float64","0    0.279
+Name: OPP_OREB_PCT, dtype: float64"
+176,22020,"APR 02, 2021",22,Away,MEM,"0    0.526
+Name: OPP_EFG_PCT, dtype: float64","0    0.262
+Name: OPP_FTA_RATE, dtype: float64","0    0.289
+Name: OPP_OREB_PCT, dtype: float64"
+177,22020,"MAR 31, 2021",24,Home,NYK,"0    0.536
+Name: OPP_EFG_PCT, dtype: float64","0    0.269
+Name: OPP_FTA_RATE, dtype: float64","0    0.273
+Name: OPP_OREB_PCT, dtype: float64"
+178,22020,"MAR 29, 2021",23,Away,BKN,"0    0.53
+Name: OPP_EFG_PCT, dtype: float64","0    0.276
+Name: OPP_FTA_RATE, dtype: float64","0    0.311
+Name: OPP_OREB_PCT, dtype: float64"
+179,22020,"MAR 27, 2021",27,Home,HOU,"0    0.564
+Name: OPP_EFG_PCT, dtype: float64","0    0.275
+Name: OPP_FTA_RATE, dtype: float64","0    0.271
+Name: OPP_OREB_PCT, dtype: float64"
+180,22020,"MAR 26, 2021",12,Home,HOU,"0    0.564
+Name: OPP_EFG_PCT, dtype: float64","0    0.275
+Name: OPP_FTA_RATE, dtype: float64","0    0.271
+Name: OPP_OREB_PCT, dtype: float64"
+181,22020,"MAR 24, 2021",29,Home,DAL,"0    0.549
+Name: OPP_EFG_PCT, dtype: float64","0    0.29
+Name: OPP_FTA_RATE, dtype: float64","0    0.283
+Name: OPP_OREB_PCT, dtype: float64"
+182,22020,"MAR 22, 2021",16,Home,OKC,"0    0.547
+Name: OPP_EFG_PCT, dtype: float64","0    0.288
+Name: OPP_FTA_RATE, dtype: float64","0    0.307
+Name: OPP_OREB_PCT, dtype: float64"
+183,22020,"MAR 19, 2021",11,Away,PHX,"0    0.532
+Name: OPP_EFG_PCT, dtype: float64","0    0.298
+Name: OPP_FTA_RATE, dtype: float64","0    0.286
+Name: OPP_OREB_PCT, dtype: float64"
+184,22020,"MAR 18, 2021",42,Away,PHX,"0    0.532
+Name: OPP_EFG_PCT, dtype: float64","0    0.298
+Name: OPP_FTA_RATE, dtype: float64","0    0.286
+Name: OPP_OREB_PCT, dtype: float64"
+185,22020,"MAR 16, 2021",29,Away,LAL,"0    0.535
+Name: OPP_EFG_PCT, dtype: float64","0    0.222
+Name: OPP_FTA_RATE, dtype: float64","0    0.273
+Name: OPP_OREB_PCT, dtype: float64"
+186,22020,"MAR 14, 2021",34,Home,POR,"0    0.563
+Name: OPP_EFG_PCT, dtype: float64","0    0.276
+Name: OPP_FTA_RATE, dtype: float64","0    0.291
+Name: OPP_OREB_PCT, dtype: float64"
+187,22020,"MAR 13, 2021",21,Home,POR,"0    0.563
+Name: OPP_EFG_PCT, dtype: float64","0    0.276
+Name: OPP_FTA_RATE, dtype: float64","0    0.291
+Name: OPP_OREB_PCT, dtype: float64"
+188,22020,"MAR 11, 2021",27,Away,NOP,"0    0.543
+Name: OPP_EFG_PCT, dtype: float64","0    0.272
+Name: OPP_FTA_RATE, dtype: float64","0    0.268
+Name: OPP_OREB_PCT, dtype: float64"
+189,22020,"MAR 03, 2021",19,Home,CHA,"0    0.544
+Name: OPP_EFG_PCT, dtype: float64","0    0.266
+Name: OPP_FTA_RATE, dtype: float64","0    0.283
+Name: OPP_OREB_PCT, dtype: float64"
+190,22020,"FEB 28, 2021",24,Home,PHX,"0    0.532
+Name: OPP_EFG_PCT, dtype: float64","0    0.298
+Name: OPP_FTA_RATE, dtype: float64","0    0.286
+Name: OPP_OREB_PCT, dtype: float64"
+191,22020,"FEB 27, 2021",21,Away,WAS,"0    0.54
+Name: OPP_EFG_PCT, dtype: float64","0    0.244
+Name: OPP_FTA_RATE, dtype: float64","0    0.276
+Name: OPP_OREB_PCT, dtype: float64"
+192,22020,"FEB 24, 2021",21,Away,CHI,"0    0.544
+Name: OPP_EFG_PCT, dtype: float64","0    0.253
+Name: OPP_FTA_RATE, dtype: float64","0    0.264
+Name: OPP_OREB_PCT, dtype: float64"
+193,22020,"FEB 23, 2021",9,Away,MIL,"0    0.52
+Name: OPP_EFG_PCT, dtype: float64","0    0.225
+Name: OPP_FTA_RATE, dtype: float64","0    0.255
+Name: OPP_OREB_PCT, dtype: float64"
+194,22020,"FEB 21, 2021",12,Away,NYK,"0    0.536
+Name: OPP_EFG_PCT, dtype: float64","0    0.269
+Name: OPP_FTA_RATE, dtype: float64","0    0.273
+Name: OPP_OREB_PCT, dtype: float64"
+195,22020,"FEB 19, 2021",7,Home,TOR,"0    0.565
+Name: OPP_EFG_PCT, dtype: float64","0    0.28
+Name: OPP_FTA_RATE, dtype: float64","0    0.279
+Name: OPP_OREB_PCT, dtype: float64"
+196,22020,"FEB 17, 2021",8,Home,IND,"0    0.554
+Name: OPP_EFG_PCT, dtype: float64","0    0.287
+Name: OPP_FTA_RATE, dtype: float64","0    0.315
+Name: OPP_OREB_PCT, dtype: float64"
+197,22020,"FEB 16, 2021",28,Home,LAL,"0    0.535
+Name: OPP_EFG_PCT, dtype: float64","0    0.222
+Name: OPP_FTA_RATE, dtype: float64","0    0.273
+Name: OPP_OREB_PCT, dtype: float64"
+198,22020,"FEB 14, 2021",18,Away,TOR,"0    0.565
+Name: OPP_EFG_PCT, dtype: float64","0    0.28
+Name: OPP_FTA_RATE, dtype: float64","0    0.279
+Name: OPP_OREB_PCT, dtype: float64"
+199,22020,"FEB 12, 2021",21,Away,CHA,"0    0.544
+Name: OPP_EFG_PCT, dtype: float64","0    0.266
+Name: OPP_FTA_RATE, dtype: float64","0    0.283
+Name: OPP_OREB_PCT, dtype: float64"
+200,22020,"FEB 10, 2021",11,Home,LAC,"0    0.543
+Name: OPP_EFG_PCT, dtype: float64","0    0.253
+Name: OPP_FTA_RATE, dtype: float64","0    0.269
+Name: OPP_OREB_PCT, dtype: float64"
+201,22020,"FEB 08, 2021",22,Away,DAL,"0    0.549
+Name: OPP_EFG_PCT, dtype: float64","0    0.29
+Name: OPP_FTA_RATE, dtype: float64","0    0.283
+Name: OPP_OREB_PCT, dtype: float64"
+202,22020,"FEB 06, 2021",20,Away,OKC,"0    0.547
+Name: OPP_EFG_PCT, dtype: float64","0    0.288
+Name: OPP_FTA_RATE, dtype: float64","0    0.307
+Name: OPP_OREB_PCT, dtype: float64"
+203,22020,"FEB 05, 2021",9,Away,OKC,"0    0.547
+Name: OPP_EFG_PCT, dtype: float64","0    0.288
+Name: OPP_FTA_RATE, dtype: float64","0    0.307
+Name: OPP_OREB_PCT, dtype: float64"
+204,22020,"FEB 03, 2021",14,Away,SAS,"0    0.576
+Name: OPP_EFG_PCT, dtype: float64","0    0.26
+Name: OPP_FTA_RATE, dtype: float64","0    0.291
+Name: OPP_OREB_PCT, dtype: float64"
+205,22020,"FEB 01, 2021",13,Away,CLE,"0    0.535
+Name: OPP_EFG_PCT, dtype: float64","0    0.268
+Name: OPP_FTA_RATE, dtype: float64","0    0.285
+Name: OPP_OREB_PCT, dtype: float64"
+206,22020,"JAN 31, 2021",23,Home,CLE,"0    0.535
+Name: OPP_EFG_PCT, dtype: float64","0    0.268
+Name: OPP_FTA_RATE, dtype: float64","0    0.285
+Name: OPP_OREB_PCT, dtype: float64"
+207,22020,"JAN 29, 2021",15,Home,PHI,"0    0.541
+Name: OPP_EFG_PCT, dtype: float64","0    0.277
+Name: OPP_FTA_RATE, dtype: float64","0    0.279
+Name: OPP_OREB_PCT, dtype: float64"
+208,22020,"JAN 27, 2021",25,Away,GSW,"0    0.54
+Name: OPP_EFG_PCT, dtype: float64","0    0.278
+Name: OPP_FTA_RATE, dtype: float64","0    0.281
+Name: OPP_OREB_PCT, dtype: float64"
+209,22020,"JAN 25, 2021",15,Away,GSW,"0    0.54
+Name: OPP_EFG_PCT, dtype: float64","0    0.278
+Name: OPP_FTA_RATE, dtype: float64","0    0.281
+Name: OPP_OREB_PCT, dtype: float64"
+210,22020,"JAN 23, 2021",18,Home,NOP,"0    0.543
+Name: OPP_EFG_PCT, dtype: float64","0    0.272
+Name: OPP_FTA_RATE, dtype: float64","0    0.268
+Name: OPP_OREB_PCT, dtype: float64"
+211,22020,"JAN 22, 2021",5,Home,ATL,"0    0.552
+Name: OPP_EFG_PCT, dtype: float64","0    0.257
+Name: OPP_FTA_RATE, dtype: float64","0    0.283
+Name: OPP_OREB_PCT, dtype: float64"
+212,22020,"JAN 20, 2021",8,Home,ORL,"0    0.55
+Name: OPP_EFG_PCT, dtype: float64","0    0.265
+Name: OPP_FTA_RATE, dtype: float64","0    0.27
+Name: OPP_OREB_PCT, dtype: float64"
+213,22020,"JAN 18, 2021",12,Away,ATL,"0    0.552
+Name: OPP_EFG_PCT, dtype: float64","0    0.257
+Name: OPP_FTA_RATE, dtype: float64","0    0.283
+Name: OPP_OREB_PCT, dtype: float64"
+214,22020,"JAN 13, 2021",2,Home,MEM,"0    0.526
+Name: OPP_EFG_PCT, dtype: float64","0    0.262
+Name: OPP_FTA_RATE, dtype: float64","0    0.289
+Name: OPP_OREB_PCT, dtype: float64"
+215,22020,"JAN 10, 2021",0,Home,SAS,"0    0.576
+Name: OPP_EFG_PCT, dtype: float64","0    0.26
+Name: OPP_FTA_RATE, dtype: float64","0    0.291
+Name: OPP_OREB_PCT, dtype: float64"
+216,22020,"JAN 09, 2021",13,Home,SAS,"0    0.576
+Name: OPP_EFG_PCT, dtype: float64","0    0.26
+Name: OPP_FTA_RATE, dtype: float64","0    0.291
+Name: OPP_OREB_PCT, dtype: float64"
+217,22020,"JAN 07, 2021",26,Away,POR,"0    0.563
+Name: OPP_EFG_PCT, dtype: float64","0    0.276
+Name: OPP_FTA_RATE, dtype: float64","0    0.291
+Name: OPP_OREB_PCT, dtype: float64"
+218,22020,"JAN 05, 2021",15,Away,DEN,"0    0.543
+Name: OPP_EFG_PCT, dtype: float64","0    0.26
+Name: OPP_FTA_RATE, dtype: float64","0    0.273
+Name: OPP_OREB_PCT, dtype: float64"
+219,22020,"JAN 03, 2021",5,Home,DEN,"0    0.543
+Name: OPP_EFG_PCT, dtype: float64","0    0.26
+Name: OPP_FTA_RATE, dtype: float64","0    0.273
+Name: OPP_OREB_PCT, dtype: float64"
+220,22020,"JAN 01, 2021",17,Home,WAS,"0    0.54
+Name: OPP_EFG_PCT, dtype: float64","0    0.244
+Name: OPP_FTA_RATE, dtype: float64","0    0.276
+Name: OPP_OREB_PCT, dtype: float64"
+221,22020,"DEC 29, 2020",12,Away,LAC,"0    0.543
+Name: OPP_EFG_PCT, dtype: float64","0    0.253
+Name: OPP_FTA_RATE, dtype: float64","0    0.269
+Name: OPP_OREB_PCT, dtype: float64"
+222,22020,"DEC 27, 2020",15,Away,LAL,"0    0.535
+Name: OPP_EFG_PCT, dtype: float64","0    0.222
+Name: OPP_FTA_RATE, dtype: float64","0    0.273
+Name: OPP_OREB_PCT, dtype: float64"
+223,22020,"DEC 26, 2020",18,Away,UTA,"0    0.541
+Name: OPP_EFG_PCT, dtype: float64","0    0.265
+Name: OPP_FTA_RATE, dtype: float64","0    0.289
+Name: OPP_OREB_PCT, dtype: float64"
+224,22020,"DEC 23, 2020",15,Home,DET,"0    0.557
+Name: OPP_EFG_PCT, dtype: float64","0    0.298
+Name: OPP_FTA_RATE, dtype: float64","0    0.298
+Name: OPP_OREB_PCT, dtype: float64"
