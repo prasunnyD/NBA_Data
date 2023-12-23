@@ -109,7 +109,7 @@ class Player:
         min_df.dropna(inplace=True)
         return min_df
 
-    def player_points(self, stat):
+    def player_stat(self, stat):
         '''
         TODO get opponents stats, home and away
         '''
