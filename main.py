@@ -8,10 +8,9 @@ import joblib
 
 a_edwards = Player('Anthony Edwards','Minnesota')
 timberwolves = Team('Minnesota')
-def_stats = timberwolves.get_team_opp_efga()
-def_stats.to_csv("def_team_stats.csv")
-X_test = [[0.559,0.272,0.263,38]]
-predict_result("edwards_model.sav")
+# advance_stats = timberwolves.get_team_pace()
+# advance_stats.to_csv("adv_team_stats.csv")
+X_test = [[0.559,0.272,0.263,100.63,39]]
 
 
 def make_player_csv(player, csv_name : str, stat : str):
@@ -39,6 +38,7 @@ def opp_data(df):
     opponents_efga_list = list()
     opponents_free_throw_rate_list = list()
     opponents_orebounding_pct_list = list()
+    pace_list = list()
     team_dict = dict()
     opps = df['OPPONENT'] 
     for opp in opps:
@@ -47,20 +47,23 @@ def opp_data(df):
         else:
             team = abrv_team_dict(opp)
             team_df = team.get_team_opp_efga()
+            adv_stats_df  = team.get_team_adv_stats()
             team_dict.update({opp:team_df})
         time.sleep(1)
         opponents_efga_list.append(team_df['OPP_EFG_PCT'][0])
         opponents_free_throw_rate_list.append(team_df['OPP_FTA_RATE'][0])
         opponents_orebounding_pct_list.append(team_df['OPP_OREB_PCT'][0])
+        pace_list.append(adv_stats_df['PACE'][0])
 
     df["OPP_EFG_PCT"]= opponents_efga_list
     df["OPP_FTA_RATE"]= opponents_free_throw_rate_list
     df["OPP_OREB_PCT"]= opponents_orebounding_pct_list
+    df['PACE'] = pace_list
 
     return df
 
-def create_model_from_scratch(csv_name : str, model_filename : str):
-    make_player_csv(a_edwards, csv_name)
+def create_model_from_scratch(csv_name : str, model_filename : str, stat : str):
+    make_player_csv(a_edwards, csv_name, stat)
     model =linear_regression(csv_name)
     joblib.dump(model,model_filename)
 
@@ -68,3 +71,6 @@ def predict_result(model_filename : str, X_test: list):
     loaded_model = joblib.load(model_filename)
     result = loaded_model.predict(X_test)
     print(result)
+
+#create_model_from_scratch("edwards_pts.csv", "edwards_model.sav", "PTS")
+predict_result("edwards_model.sav", X_test)

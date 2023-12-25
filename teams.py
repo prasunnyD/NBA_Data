@@ -67,6 +67,10 @@ class Team:
         stats = LeagueDashTeamStats(team_id_nullable=self.id,measure_type_detailed_defense='Four Factors',season="2022-23", timeout=100).get_data_frames()[0]
         return stats
         # return stats["OPP_EFG_PCT"][0]
+
+    def get_team_adv_stats(self):
+        stats = LeagueDashTeamStats(team_id_nullable=self.id,measure_type_detailed_defense='Advanced',season="2022-23", timeout=100).get_data_frames()[0]
+        return stats
         
     #TODO TeamAndPlayersVsPlayers CAN BE USED FOR LINEUP COMPARISON
 
