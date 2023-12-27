@@ -10,7 +10,7 @@ a_edwards = Player('Anthony Edwards','Minnesota')
 timberwolves = Team('Minnesota')
 # advance_stats = timberwolves.get_team_pace()
 # advance_stats.to_csv("adv_team_stats.csv")
-X_test = [[0.559,0.272,0.263,100.63,39]]
+X_test = [[0.522,0.269,0.329,101.55,38]]
 
 
 def make_player_csv(player, csv_name : str, stat : str):
@@ -21,11 +21,11 @@ def make_player_csv(player, csv_name : str, stat : str):
    stats_df.dropna(inplace=True)
    stats_df.to_csv(csv_name, index = False)
 
-def linear_regression(csv_name : str):
+def linear_regression(csv_name : str, stat : str):
     stats = pd.read_csv(csv_name)
     print(stats)
     player_df= stats.drop(columns=['SEASON_ID','OPPONENT','GAME_DATE','LOCATION'])
-    x_train,x_test,y_train,y_test = build_TrainTest(player_df,'PTS')
+    x_train,x_test,y_train,y_test = build_TrainTest(player_df,stat)
     model,y_pred = RunLinearModel(x_train,y_train,x_test,y_test)
     plt.scatter(y_pred ,y_test)
     plt.xlabel('minutes')
@@ -64,7 +64,7 @@ def opp_data(df):
 
 def create_model_from_scratch(csv_name : str, model_filename : str, stat : str):
     make_player_csv(a_edwards, csv_name, stat)
-    model =linear_regression(csv_name)
+    model =linear_regression(csv_name, stat)
     joblib.dump(model,model_filename)
 
 def predict_result(model_filename : str, X_test: list):
@@ -72,5 +72,6 @@ def predict_result(model_filename : str, X_test: list):
     result = loaded_model.predict(X_test)
     print(result)
 
-#create_model_from_scratch("edwards_pts.csv", "edwards_model.sav", "PTS")
-predict_result("edwards_model.sav", X_test)
+# create_model_from_scratch("edwards_pts.csv", "edwards_rebounds_model.sav", "REB")
+predict_result("edwards_rebounds_model.sav", X_test)
+poisson_dist(25,31.4)

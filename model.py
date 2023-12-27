@@ -4,6 +4,7 @@ from math import sqrt
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from players import *
+from scipy.stats import poisson
 
 def RunLinearModel(trainx,trainy,testx,testy):
     lm = linear_model.LinearRegression()
@@ -19,6 +20,10 @@ def build_TrainTest(df,column):
     x_train,x_test,y_train,y_test = train_test_split(X,Y, test_size =.25, random_state =1)
     return x_train,x_test,y_train,y_test
 
+def poisson_dist(test_value, average):
+    print(f"probability of {test_value} point", poisson.pmf(k=test_value,mu=average))
+    print(f"probability of less than {test_value} point", poisson.cdf(k=test_value,mu=average))
+    print(f"probability of greater than {test_value} point", 1-poisson.cdf(k=test_value,mu=average))
 
 # a_edwards = Player('Anthony Edwards','Minnesota')
 # min_df = a_edwards.player_minutes()
