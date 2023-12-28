@@ -63,13 +63,20 @@ class Team:
     #     final = mergeTables(team_career_stats,team_career_adv_stats)
     #     return final
 
-    def get_team_opp_efga(self):
-        stats = LeagueDashTeamStats(team_id_nullable=self.id,measure_type_detailed_defense='Four Factors',season="2022-23", timeout=100).get_data_frames()[0]
+    def get_season(self, season_id : str):
+        year = season_id[-2:]
+        year_dict={'24':'2023-24','23':'2022-23','22':'2021-22','21':'2020-21','20':'2019-20','19':'2018-2019'}
+        return year_dict[year]
+
+    def get_team_opp_efga(self, season_id):
+        season_year = self.get_season(season_id)
+        stats = LeagueDashTeamStats(team_id_nullable=self.id,measure_type_detailed_defense='Four Factors',season=season_year, timeout=100).get_data_frames()[0]
         return stats
         # return stats["OPP_EFG_PCT"][0]
 
-    def get_team_adv_stats(self):
-        stats = LeagueDashTeamStats(team_id_nullable=self.id,measure_type_detailed_defense='Advanced',season="2022-23", timeout=100).get_data_frames()[0]
+    def get_team_adv_stats(self, season_id):
+        season_year = self.get_season(season_id)
+        stats = LeagueDashTeamStats(team_id_nullable=self.id,measure_type_detailed_defense='Advanced',season=season_year, timeout=100).get_data_frames()[0]
         return stats
         
     #TODO TeamAndPlayersVsPlayers CAN BE USED FOR LINEUP COMPARISON

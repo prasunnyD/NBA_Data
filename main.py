@@ -6,11 +6,10 @@ import pandas as pd
 import time
 import joblib
 
-a_edwards = Player('Anthony Edwards','Minnesota')
+edwards = Player('Anthony Edwards','Minnesota')
 timberwolves = Team('Minnesota')
-# advance_stats = timberwolves.get_team_pace()
-# advance_stats.to_csv("adv_team_stats.csv")
-X_test = [[0.522,0.269,0.329,101.55,38]]
+min_df = edwards.player_minutes().iloc[0]
+X_test = [[0.534,0.238,0.29,99.02,min_df['prev_3_avg']]]
 
 
 def make_player_csv(player, csv_name : str, stat : str):
@@ -40,14 +39,13 @@ def opp_data(df):
     opponents_orebounding_pct_list = list()
     pace_list = list()
     team_dict = dict()
-    opps = df['OPPONENT'] 
-    for opp in opps:
+    for opp, season_id in zip(df['OPPONENT'],df['SEASON_ID']):
         if opp in team_dict:
             team_df = team_dict[opp]
         else:
             team = abrv_team_dict(opp)
-            team_df = team.get_team_opp_efga()
-            adv_stats_df  = team.get_team_adv_stats()
+            team_df = team.get_team_opp_efga(season_id)
+            adv_stats_df  = team.get_team_adv_stats(season_id)
             team_dict.update({opp:team_df})
         time.sleep(1)
         opponents_efga_list.append(team_df['OPP_EFG_PCT'][0])
@@ -62,8 +60,8 @@ def opp_data(df):
 
     return df
 
-def create_model_from_scratch(csv_name : str, model_filename : str, stat : str):
-    make_player_csv(a_edwards, csv_name, stat)
+def create_model_from_scratch(player, csv_name : str, model_filename : str, stat : str):
+    make_player_csv(player, csv_name, stat)
     model =linear_regression(csv_name, stat)
     joblib.dump(model,model_filename)
 
@@ -72,6 +70,6 @@ def predict_result(model_filename : str, X_test: list):
     result = loaded_model.predict(X_test)
     print(result)
 
-# create_model_from_scratch("edwards_pts.csv", "edwards_rebounds_model.sav", "REB")
-predict_result("edwards_rebounds_model.sav", X_test)
-poisson_dist(25,31.4)
+# create_model_from_scratch(giannis,"giannis_pts.csv", "giannis_points_model.sav", "PTS")
+predict_result("edwards_points_model.sav", X_test)
+poisson_dist(31.5,32.47)
