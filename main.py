@@ -1,15 +1,17 @@
 from players import Player
 from teams import Team, abrv_team_dict
 from model import *
-import matplotlib.pyplot as plt 
+
 import pandas as pd
 import time
 import joblib
+import boto3
 
 edwards = Player('Anthony Edwards','Minnesota')
 timberwolves = Team('Minnesota')
 min_df = edwards.player_minutes().iloc[0]
-X_test = [[0.534,0.238,0.29,99.02,min_df['prev_3_avg']]]
+print(min_df)
+X_test = [[0.555,0.236,0.31,101.00,min_df['prev_3_avg']]]
 
 
 def make_player_csv(player, csv_name : str, stat : str):
@@ -20,18 +22,6 @@ def make_player_csv(player, csv_name : str, stat : str):
    stats_df.dropna(inplace=True)
    stats_df.to_csv(csv_name, index = False)
 
-def linear_regression(csv_name : str, stat : str):
-    stats = pd.read_csv(csv_name)
-    print(stats)
-    player_df= stats.drop(columns=['SEASON_ID','OPPONENT','GAME_DATE','LOCATION'])
-    x_train,x_test,y_train,y_test = build_TrainTest(player_df,stat)
-    model,y_pred = RunLinearModel(x_train,y_train,x_test,y_test)
-    plt.scatter(y_pred ,y_test)
-    plt.xlabel('minutes')
-    plt.ylabel('predicted points')
-    plt.show()
-
-    return model
 
 def opp_data(df):
     opponents_efga_list = list()
@@ -63,13 +53,21 @@ def opp_data(df):
 def create_model_from_scratch(player, csv_name : str, model_filename : str, stat : str):
     make_player_csv(player, csv_name, stat)
     model =linear_regression(csv_name, stat)
+    s3 = boto3.client("s3")
+    s3.upload_file(bucket='prasun-nba-model',filename= model_filename)
     joblib.dump(model,model_filename)
 
 def predict_result(model_filename : str, X_test: list):
+    s3 = boto3.client("s3")
+    response = s3.get_object()
     loaded_model = joblib.load(model_filename)
     result = loaded_model.predict(X_test)
     print(result)
 
 # create_model_from_scratch(giannis,"giannis_pts.csv", "giannis_points_model.sav", "PTS")
-predict_result("edwards_points_model.sav", X_test)
-poisson_dist(31.5,32.47)
+# predict_result("edwards_points_model.sav", X_test)
+#poisson_dist(26.5,24)
+stats = pd.read_csv("edwards_pts.csv")
+print(stats.dtypes)
+player_df =stats.drop(columns=['SEASON_ID','OPPONENT','GAME_DATE','LOCATION'])
+print(player_df.corr()['PTS'])

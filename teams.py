@@ -83,6 +83,9 @@ class Team:
 
 
 def abrv_team_dict(team : str):
+    """
+    TODO need to fix this is not efficient
+    """
     ATL = Team('Atlanta')
     BKN = Team('Brooklyn')
     BOS = Team('Boston')
@@ -121,10 +124,6 @@ def abrv_team_dict(team : str):
     return abrv_team_dict[team]
 
 
-# timberwolves = Team('Minnesota')
-# print(timberwolves.team_rebounding_stats())
 abrv_list = ['ATL', 'BKN', 'BOS', 'CHA', 'CHI', 'CLE', 'DAL', 'DEN', 'DET', 'GSW', 'HOU', 'IND', 'MEM', 'MIA', 'MIL', 'MIN', 'NOP', 'NYK',
               'LAC', 'LAL', 'OKC', 'ORL', 'PHI', 'PHX', 'POR', 'SAC', 'SAS', 'TOR', 'UTA', 'WAS']
 
-# for abrv in abrv_list:
-#     print(teams.find_team_by_abbreviation(abrv))
