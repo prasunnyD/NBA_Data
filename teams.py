@@ -66,7 +66,7 @@ class Team:
     def get_season(self, season_id : str):
         year = season_id[-2:]
         year_dict={'24':'2023-24','23':'2022-23','22':'2021-22','21':'2020-21','20':'2019-20','19':'2018-2019'}
-        return year_dict[year]
+        return year_dict.get(year)
 
     def get_team_opp_efga(self, season_id):
         season_year = self.get_season(season_id)
@@ -84,46 +84,14 @@ class Team:
 
 def abrv_team_dict(team : str):
     """
-    TODO need to fix this is not efficient
+    Dictionary of all the city with their abbreviations
     """
-    ATL = Team('Atlanta')
-    BKN = Team('Brooklyn')
-    BOS = Team('Boston')
-    CHA = Team('Charlotte')
-    CHI = Team('Chicago')
-    CLE = Team('Cleveland')
-    DAL = Team('Dallas')
-    DEN = Team('Denver')
-    DET = Team('Detroit')
-    GSW = Team('Golden State')
-    HOU = Team('Houston')
-    IND = Team('Indiana')
-    MEM = Team('Memphis')
-    MIA = Team('Miami')
-    MIL = Team('Milwaukee')
-    MIN = Team('Minnesota')
-    NOP = Team('New Orleans')
-    NYK = Team('New York')
-    LAC = Team('Los Angeles Clippers')
-    LAL = Team('Los Angeles Lakers')
-    OKC = Team('Oklahoma City')
-    ORL = Team('Orlando')
-    PHI = Team('Philadelphia')
-    PHX = Team('Phoenix')
-    POR = Team('Portland')
-    SAC = Team('Sacramento')
-    SAS = Team('San Antonio')
-    TOR = Team('Toronto')
-    UTA = Team('Utah')
-    WAS = Team('Washington')
-
-    abrv_team_dict = {'ATL': ATL, 'BKN': BKN, 'BOS': BOS, 'CHA': CHA, 'CHI': CHI, 'CLE': CLE, 'DAL': DAL, 'DEN': DEN, 'DET': DET, 'GSW': GSW,
-                      'HOU': HOU, 'IND': IND, 'MEM': MEM, 'MIA': MIA, 'MIL': MIL, 'MIN': MIN, 'NOP': NOP, 'NYK': NYK, 'LAC': LAC, 'LAL': LAL, 
-                      'OKC': OKC, 'ORL': ORL, 'PHI': PHI, 'PHX': PHX, 'POR': POR, 'SAC': SAC, 'SAS': SAS, 'TOR': TOR, 'UTA': UTA, 'WAS': WAS}
+    abrv_team_dict = {'ATL': "Atlanta", 'BKN': 'Brooklyn', 'BOS': 'Boston', 'CHA': 'Charlotte', 'CHI': 'Chicago', 'CLE': 'Cleveland', 'DAL': 'Dallas', 'DEN': 'Denver', 'DET': 'Detroit', 'GSW': 'Golden State',
+                      'HOU': "Houston", 'IND': 'Indiana', 'MEM': 'Memphis', 'MIA': 'Miami', 'MIL': 'Milwaukee', 'MIN': 'Minnesota', 'NOP': 'New Orleans', 'NYK': 'New York', 'LAC': 'Los Angeles Clippers', 'LAL': 'Los Angeles Lakers', 
+                      'OKC': 'Oklahoma City', 'ORL': 'Orlando', 'PHI': 'Philadelphia', 'PHX': 'Phoenix', 'POR': 'Portland', 'SAC': 'Sacramento', 'SAS': 'San Antonio', 'TOR': 'Toronto', 'UTA': 'Utah', 'WAS': 'Washington'}
     
-    return abrv_team_dict[team]
+    return abrv_team_dict.get(team)
 
 
-abrv_list = ['ATL', 'BKN', 'BOS', 'CHA', 'CHI', 'CLE', 'DAL', 'DEN', 'DET', 'GSW', 'HOU', 'IND', 'MEM', 'MIA', 'MIL', 'MIN', 'NOP', 'NYK',
-              'LAC', 'LAL', 'OKC', 'ORL', 'PHI', 'PHX', 'POR', 'SAC', 'SAS', 'TOR', 'UTA', 'WAS']
+
 
