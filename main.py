@@ -10,7 +10,7 @@ import boto3
 edwards = Player('Anthony Edwards','Minnesota')
 timberwolves = Team('Minnesota')
 min_df = edwards.player_minutes().iloc[0]
-X_test = [[0.555,0.236,0.31,101.00,min_df['prev_3_avg']]]
+X_test = [[0.553,0.257,0.282,97.08,min_df['prev_3_avg']]]
 
 
 def make_player_csv(player, csv_name : str, stat : str):
@@ -67,10 +67,8 @@ def create_model_from_scratch(player, csv_name : str, model_filename : str, stat
     TODO: Upload csv files to aws or make a database of players from the csv files
     """
     make_player_csv(player, csv_name, stat)
-    model =run_ridge_model(csv_name, stat)
-    s3 = boto3.client("s3")
-    s3.upload_file(bucket='prasun-nba-model',filename= model_filename)
-    joblib.dump(model,model_filename)
+    run_ridge_model(csv_name, stat)
+
 
 def predict_result(model_filename : str, X_test: list):
     """
@@ -81,18 +79,18 @@ def predict_result(model_filename : str, X_test: list):
     TODO: Get model from aws s3
     """
     s3 = boto3.client("s3")
-    response = s3.get_object()
-    loaded_model = joblib.load(model_filename)
+    response = s3.get_object(Bucket='prasun-nba-model',Key=model_filename)
+    loaded_model = joblib.load(response)
     result = loaded_model.predict(X_test)
-    print(result)
+    return result
 
 # create_model_from_scratch(giannis,"giannis_pts.csv", "giannis_points_model.sav", "PTS")
 # predict_result("edwards_points_model.sav", X_test)
 #poisson_dist(26.5,24)
 
-kat = Player('Mike Conley','Minnesota')
-make_player_csv(kat,csv_name='mike_conley_pts.csv',stat='PTS')
-stats = pd.read_csv("mike_conley_pts.csv")
-predictors=["OPP_EFG_PCT","OPP_FTA_RATE","OPP_OREB_PCT",'PACE','MINUTES']
-results=run_ridge_model(stats,22022,predictors,'PTS',"mike_conley_points_model.sav")
-results.to_csv("test_results.csv", index = False)
+# kat = Player('Mike Conley','Minnesota')
+# make_player_csv(kat,csv_name='mike_conley_pts.csv',stat='PTS')
+# stats = pd.read_csv("mike_conley_pts.csv")
+# predictors=["OPP_EFG_PCT","OPP_FTA_RATE","OPP_OREB_PCT",'PACE','MINUTES']
+# results=run_ridge_model(stats,22022,predictors,'PTS',"mike_conley_points_model.sav")
+# results.to_csv("test_results.csv", index = False)
