@@ -1,16 +1,13 @@
 from players import Player
 from teams import Team, abrv_team_dict
 from model import *
+from io import BytesIO
 
 import pandas as pd
 import time
 import joblib
 import boto3
 
-edwards = Player('Anthony Edwards','Minnesota')
-timberwolves = Team('Minnesota')
-min_df = edwards.player_minutes().iloc[0]
-X_test = [[0.553,0.257,0.282,97.08,min_df['prev_3_avg']]]
 
 
 def make_player_csv(player, csv_name : str, stat : str):
@@ -62,13 +59,14 @@ def opp_data(df):
 
     return df
 
-def create_model_from_scratch(player, csv_name : str, model_filename : str, stat : str):
+def create_model_from_scratch(player, year: int, csv_name : str, model_filename : str, stat : str, predictors: list):
     """
     TODO: Upload csv files to aws or make a database of players from the csv files
     """
     make_player_csv(player, csv_name, stat)
-    run_ridge_model(csv_name, stat)
-
+    stats = pd.read_csv(csv_name)
+    results = run_ridge_model(stats_df=stats,year= year, predictors=predictors, model_filename=model_filename,stat_column=stat,)
+    results.to_csv("test_results.csv", index = False)
 
 def predict_result(model_filename : str, X_test: list):
     """
@@ -76,21 +74,22 @@ def predict_result(model_filename : str, X_test: list):
     Parameters:
         model_filename (string): Desired model to predict results
         X_test (list): List of variables that want to predict against
-    TODO: Get model from aws s3
     """
     s3 = boto3.client("s3")
     response = s3.get_object(Bucket='prasun-nba-model',Key=model_filename)
-    loaded_model = joblib.load(response)
+    bytes_stream = BytesIO(response['Body'].read())
+    loaded_model = joblib.load(bytes_stream)
     result = loaded_model.predict(X_test)
     return result
 
-# create_model_from_scratch(giannis,"giannis_pts.csv", "giannis_points_model.sav", "PTS")
-# predict_result("edwards_points_model.sav", X_test)
-#poisson_dist(26.5,24)
 
-# kat = Player('Mike Conley','Minnesota')
-# make_player_csv(kat,csv_name='mike_conley_pts.csv',stat='PTS')
-# stats = pd.read_csv("mike_conley_pts.csv")
-# predictors=["OPP_EFG_PCT","OPP_FTA_RATE","OPP_OREB_PCT",'PACE','MINUTES']
-# results=run_ridge_model(stats,22022,predictors,'PTS',"mike_conley_points_model.sav")
-# results.to_csv("test_results.csv", index = False)
+if __name__ == "__main__":
+    edwards = Player('Anthony Edwards','Minnesota')
+    timberwolves = Team('Minnesota')
+    predictors=["OPP_EFG_PCT","OPP_FTA_RATE","OPP_OREB_PCT",'PACE','MINUTES']
+    #create_model_from_scratch(player=edwards,csv_name="anthony_edwards_pts.csv",year=22022,predictors=predictors,stat='PTS',model_filename="anthony_edwards_points_model.sav")
+    min_df = edwards.player_minutes().iloc[0]
+    X_test = [[0.553,0.257,0.282,97.08,min_df['prev_3_avg']]]
+    input = pd.DataFrame(X_test, columns=predictors)
+    prediction = predict_result("anthony_edwards_points_model.sav", X_test=input)
+    print("Projected Points: ",prediction[0][0])

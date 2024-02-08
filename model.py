@@ -32,7 +32,7 @@ def run_ridge_model(stats_df, year : int, predictors : list, stat_column: str, m
     reg = Ridge(alpha=0.1)
     reg.fit(train[predictors], train)
     predictions = reg.predict(test[predictors])
-    predictions = pd.DataFrame(predictions,columns=['predictions','a','b','c','d','e'])
+    predictions = pd.DataFrame(predictions,columns=['Projected Points','OPP_EFG_PCT','OPP_FTA_RATE','OPP_OREB_PCT','PACE','MINUTES'])
     comparison = pd.concat([test[['GAME_DATE','OPPONENT',stat_column]],predictions],axis=1)
     save_model_upload_s3(reg,model_filename)
     return comparison
