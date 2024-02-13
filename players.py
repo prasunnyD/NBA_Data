@@ -116,12 +116,7 @@ class Player:
         boxscore_df = self.player_career_boxscore()
         pts_df = pd.DataFrame()
         home_list = ["Away" if '@' in x else "Home" for x in boxscore_df['MATCHUP']]
-        opp_team = []
-        # TODO convert to list comprehension
-        for x in boxscore_df['MATCHUP']:
-            dummy = x.split()
-            opponent = dummy[2]
-            opp_team.append(opponent)
+        opp_team = [x.split()[2] for x in boxscore_df['MATCHUP']]
         pts_df['SEASON_ID'] = boxscore_df['SEASON_ID']
         pts_df['GAME_DATE'] = boxscore_df['GAME_DATE']
         pts_df[stat] = boxscore_df[stat]

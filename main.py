@@ -93,3 +93,4 @@ if __name__ == "__main__":
     input = pd.DataFrame(X_test, columns=predictors)
     prediction = predict_result("anthony_edwards_points_model.sav", X_test=input)
     print("Projected Points: ",prediction[0][0])
+    poisson_dist(28.5,27)

@@ -53,6 +53,9 @@ def poisson_dist(test_value : float, average : int):
     print(f"probability of {test_value} point", poisson.pmf(k=test_value,mu=average))
     print(f"probability of less than {test_value} point", poisson.cdf(k=test_value,mu=average))
     print(f"probability of greater than {test_value} point", 1-poisson.cdf(k=test_value,mu=average))
+    less_than = poisson.cdf(k=test_value,mu=average)
+    greater_than = 1-less_than
+    return less_than, greater_than
 
 def linear_regression(csv_name : str, stat : str):
     stats = pd.read_csv(csv_name)
