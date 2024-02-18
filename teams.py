@@ -65,16 +65,27 @@ class Team:
 
     def get_season(self, season_id : str):
         year = season_id[-2:]
-        year_dict={'24':'2023-24','23':'2022-23','22':'2021-22','21':'2020-21','20':'2019-20','19':'2018-2019'}
+        year_dict={'23':'2023-24','22':'2022-23','21':'2021-22','20':'2020-21','19':'2019-20','18':'2018-2019','17':'2017-2018'}
         return year_dict.get(year)
 
-    def get_team_opp_efga(self, season_id):
+    def get_team_opp_efga(self, season_id: str) -> pd.DataFrame:
+        """
+        Parameters:
+            season_id(string)
+        Returns:
+            stats (dataframe)
+        """
         season_year = self.get_season(season_id)
         stats = LeagueDashTeamStats(team_id_nullable=self.id,measure_type_detailed_defense='Four Factors',season=season_year, timeout=100).get_data_frames()[0]
         return stats
-        # return stats["OPP_EFG_PCT"][0]
 
-    def get_team_adv_stats(self, season_id):
+    def get_team_adv_stats(self, season_id: str) -> pd.DataFrame:
+        """
+        Parameters:
+            season_id(string)
+        Returns:
+            stats (dataframe)
+        """
         season_year = self.get_season(season_id)
         stats = LeagueDashTeamStats(team_id_nullable=self.id,measure_type_detailed_defense='Advanced',season=season_year, timeout=100).get_data_frames()[0]
         return stats
