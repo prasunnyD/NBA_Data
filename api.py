@@ -14,20 +14,16 @@ app.add_middleware(
 )
 
 class Item(BaseModel):
-    OEFG:float
-    OFTR:float
-    OREB:float
-    PACE:float
+    city:str
     minutes:float
 
 @app.post("/points-prediction/{player_name}")
 def points_prediction(player_name: str,item: Item):
     """
-    TODO instead of taking inputs could autofill in backend only keep minutes as input
+    Takes player name, opponent city, and minutes as inputs.
+    Returns predicted points
     """
-    predictors=["OPP_EFG_PCT","OPP_FTA_RATE","OPP_OREB_PCT",'PACE','MINUTES']
-    input = pd.DataFrame([item.model_dump().values()], columns=predictors)
-    prediction = predict_result(f'{player_name}_points_model.sav',input)
+    prediction = predict_result(f'{player_name}_points_model.sav', item.city, item.minutes)
     print(prediction)
     return {"projected_points": prediction[0][0]}
 

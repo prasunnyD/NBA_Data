@@ -72,29 +72,31 @@ def create_model_from_scratch(player, year: int, csv_name : str, model_filename 
     results = run_ridge_model(stats_df=stats,year= year, predictors=predictors, model_filename=model_filename,stat_column=stat,)
     results.to_csv("test_results.csv", index = False)
 
-def predict_result(model_filename : str, X_test: list):
+def predict_result(model_filename : str, city: str, minutes: float):
     """
     Get model prediction
     Parameters:
         model_filename (string): Desired model to predict results
-        X_test (list): List of variables that want to predict against
+        city (string): opponent team city
+        minutes (float): projected minutes played by player
     """
+    opp_team = Team(city)
+    opp_df = opp_team.get_team_opp_efga('22023')
+    adv_stats_df = opp_team.get_team_adv_stats('22023')
+    opp_df['PACE'] = adv_stats_df['PACE'][0]
+    opp_df['MINUTES']= minutes
+    opp_df = opp_df[['OPP_EFG_PCT',"OPP_FTA_RATE","OPP_OREB_PCT",'PACE','MINUTES']]
     s3 = boto3.client("s3")
     response = s3.get_object(Bucket='prasun-nba-model',Key=model_filename)
     bytes_stream = BytesIO(response['Body'].read())
     loaded_model = joblib.load(bytes_stream)
-    result = loaded_model.predict(X_test)
+    result = loaded_model.predict(opp_df)
     return result
 
 
 if __name__ == "__main__":
-    lebron = Player('Jayson Tatum','Boston')
-    # mavericks = Team('Boston')
-    predictors=["OPP_EFG_PCT","OPP_FTA_RATE","OPP_OREB_PCT",'PACE','MINUTES']
-    create_model_from_scratch(player=lebron,csv_name="jayson_tatum_pts.csv",year=22022,predictors=predictors,stat='PTS',model_filename="jayson_tatum_points_model.sav")
-    # min_df = edwards.player_minutes().iloc[0]
-    # X_test = [[0.553,0.257,0.282,97.08,min_df['prev_3_avg']]]
-    # input = pd.DataFrame(X_test, columns=predictors)
-    # prediction = predict_result("anthony_edwards_points_model.sav", X_test=input)
-    # print("Projected Points: ",prediction[0][0])
-    # poisson_dist(28.5,27)
+    # lebron = Player('Jayson Tatum','Boston')
+    # predictors=["OPP_EFG_PCT","OPP_FTA_RATE","OPP_OREB_PCT",'PACE','MINUTES']
+    # create_model_from_scratch(player=lebron,csv_name="jayson_tatum_pts.csv",year=22022,predictors=predictors,stat='PTS',model_filename="jayson_tatum_points_model.sav")
+    results = predict_result('anthony_edwards_points_model.sav','Atlanta',37.8)
+    print(results)
