@@ -1,5 +1,5 @@
 from nba_api.stats.static import teams
-from nba_api.stats.endpoints import TeamPlayerDashboard, PlayerDashboardByGameSplits, LeagueGameLog, LeagueDashTeamStats
+from nba_api.stats.endpoints import TeamPlayerDashboard, PlayerDashboardByGameSplits, LeagueGameLog, LeagueDashTeamStats, LeagueDashPtTeamDefend
 from util import mergeTables
 import pandas as pd
 class Team:
@@ -68,28 +68,32 @@ class Team:
         year_dict={'23':'2023-24','22':'2022-23','21':'2021-22','20':'2020-21','19':'2019-20','18':'2018-2019','17':'2017-2018'}
         return year_dict.get(year)
 
-    def get_team_opp_efga(self, season_id: str) -> pd.DataFrame:
+    def get_team_opp_efga(self, season_id: str, last_number_games : str = "0") -> pd.DataFrame:
         """
         Parameters:
             season_id(string)
+            last_number_games (string): Returns stats of last number of games
         Returns:
             stats (dataframe)
         """
         season_year = self.get_season(season_id)
-        stats = LeagueDashTeamStats(team_id_nullable=self.id,measure_type_detailed_defense='Four Factors',season=season_year, timeout=100).get_data_frames()[0]
+        stats = LeagueDashTeamStats(team_id_nullable=self.id,measure_type_detailed_defense='Four Factors',season=season_year, last_n_games=last_number_games, timeout=100).get_data_frames()[0]
         return stats
 
-    def get_team_adv_stats(self, season_id: str) -> pd.DataFrame:
+    def get_team_adv_stats(self, season_id: str, last_number_games : str = "0") -> pd.DataFrame:
         """
         Parameters:
             season_id(string)
+            last_number_games (string): Returns stats of last number of games
         Returns:
             stats (dataframe)
         """
         season_year = self.get_season(season_id)
-        stats = LeagueDashTeamStats(team_id_nullable=self.id,measure_type_detailed_defense='Advanced',season=season_year, timeout=100).get_data_frames()[0]
+        stats = LeagueDashTeamStats(team_id_nullable=self.id,measure_type_detailed_defense='Advanced',season=season_year, last_n_games=last_number_games,timeout=100).get_data_frames()[0]
         return stats
         
+    def get_team_def(self):
+        df = LeagueDashPtTeamDefend(team_id_nullable=self.id, )
     #TODO TeamAndPlayersVsPlayers CAN BE USED FOR LINEUP COMPARISON
 
 

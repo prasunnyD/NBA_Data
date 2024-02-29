@@ -1,3 +1,6 @@
+import wandb
+from wandb.sklearn import plot_precision_recall, plot_feature_importances
+from wandb.sklearn import plot_class_proportions, plot_learning_curve, plot_roc
 from sklearn.linear_model import Ridge, LinearRegression
 from sklearn.metrics import mean_squared_error , r2_score
 from math import sqrt
@@ -31,7 +34,10 @@ def run_ridge_model(stats_df, year : int, predictors : list, stat_column: str, m
     test = stats_df[stats_df['SEASON_ID'] >= year]
     reg = Ridge(alpha=0.1)
     reg.fit(train[predictors], train)
+    model_params = reg.get_params()
     predictions = reg.predict(test[predictors])
+    probas = reg.predict_proba(test[predictors])
+    importances = reg.feature_importances_
     predictions = pd.DataFrame(predictions,columns=['Projected Points','OPP_EFG_PCT','OPP_FTA_RATE','OPP_OREB_PCT','PACE','MINUTES'])
     comparison = pd.concat([test[['GAME_DATE','OPPONENT',stat_column]],predictions],axis=1)
     save_model_upload_s3(reg,model_filename)

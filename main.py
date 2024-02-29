@@ -81,8 +81,8 @@ def predict_result(model_filename : str, city: str, minutes: float):
         minutes (float): projected minutes played by player
     """
     opp_team = Team(city)
-    opp_df = opp_team.get_team_opp_efga('22023')
-    adv_stats_df = opp_team.get_team_adv_stats('22023')
+    opp_df = opp_team.get_team_opp_efga('22023','5')
+    adv_stats_df = opp_team.get_team_adv_stats('22023','5')
     opp_df['PACE'] = adv_stats_df['PACE'][0]
     opp_df['MINUTES']= minutes
     opp_df = opp_df[['OPP_EFG_PCT',"OPP_FTA_RATE","OPP_OREB_PCT",'PACE','MINUTES']]
@@ -98,5 +98,10 @@ if __name__ == "__main__":
     # lebron = Player('Jayson Tatum','Boston')
     # predictors=["OPP_EFG_PCT","OPP_FTA_RATE","OPP_OREB_PCT",'PACE','MINUTES']
     # create_model_from_scratch(player=lebron,csv_name="jayson_tatum_pts.csv",year=22022,predictors=predictors,stat='PTS',model_filename="jayson_tatum_points_model.sav")
-    results = predict_result('anthony_edwards_points_model.sav','Atlanta',37.8)
-    print(results)
+    # results = predict_result('anthony_edwards_points_model.sav','Atlanta',37.8)
+    # print(results)
+
+    a_edwards = Player('Anthony Edwards', 'Minnesota')
+    stats = a_edwards.player_career_boxscore()
+    print(stats)
+    twolves = Team('Minnesota')

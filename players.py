@@ -1,6 +1,6 @@
 from nba_api.stats.endpoints import playercareerstats, PlayerDashboardByGameSplits, LeagueDashPlayerStats, PlayerDashboardByYearOverYear, CumeStatsPlayerGames, WinProbabilityPBP, PlayerGameLogs, PlayerGameLog
 from nba_api.stats.static import players
-from nba_api.stats.library.parameters import SeasonAll
+from nba_api.stats.library.parameters import SeasonAll, SeasonNullable
 import pandas as pd
 from util import mergeTables
 class Player:
@@ -59,7 +59,7 @@ class Player:
         TODO: Make so can get single season from this to
         """
         regular_stats_columns = ['GROUP_VALUE','NAME','GP','MIN','FGM','FGA','FG_PCT','FG3M', 'FG3A', 'FG3_PCT', 'FTM', 'FTA', 'FT_PCT', 'REB', 'AST', 'TOV', 'STL', 'BLK', 'PTS', 'PLUS_MINUS']
-        adv_stats_columns = ['GROUP_VALUE','NAME','W_PCT','OFF_RATING','DEF_RATING', 'NET_RATING', 'AST_PCT', 'AST_RATIO', 'EFG_PCT', 'TS_PCT', 'USG_PCT', 'POSS', 'PIE', 'PACE', '']
+        adv_stats_columns = ['GROUP_VALUE','NAME','W_PCT','OFF_RATING','DEF_RATING', 'NET_RATING', 'AST_PCT', 'AST_RATIO', 'EFG_PCT', 'TS_PCT', 'USG_PCT', 'POSS', 'PIE', 'PACE']
         stats = PlayerDashboardByYearOverYear(player_id=self.id,per_mode_detailed="PerGame", season=season, season_segment_nullable = season_segment, season_type_playoffs= season_type).get_data_frames()[1]
         stats['NAME'] = self.name
         player_career_stats = stats[regular_stats_columns]
@@ -89,8 +89,12 @@ class Player:
         pbp = WinProbabilityPBP('0022201225').get_data_frames()[0]
         print(pbp)
 
-    def player_career_boxscore(self):
+    def player_career_boxscore(self,measure_type='Base') -> pd.DataFrame:
+        """
+        Returns player boxscore per game for entire career
+        """
         gamelog_df = PlayerGameLog(player_id=self.id,season=SeasonAll.all).get_data_frames()[0]
+        #gamelog_df = PlayerGameLogs(player_id_nullable=self.id,season_nullable=SeasonNullable.current_season,measure_type_player_game_logs_nullable='Advanced').get_data_frames()[0]
         return gamelog_df
             
     def player_minutes(self):
@@ -101,17 +105,15 @@ class Player:
         min_df = pd.DataFrame()
         min_df['MIN'] = boxscore_df['MIN']
         min_df['prev_3_avg'] = boxscore_df['MIN'].rolling(3).mean()
-        #min_df['prev_5_avg'] = boxscore_df['MIN'].rolling(5).mean()
         min_df['prev_3_median'] = boxscore_df['MIN'].rolling(3).median()
-        #min_df['prev_5_median'] = boxscore_df['MIN'].rolling(5).median()
         min_df['prev_3_std'] = boxscore_df['MIN'].rolling(3).std()
-        #min_df['prev_5_std'] = boxscore_df['MIN'].rolling(5).std()
         min_df.dropna(inplace=True)
         return min_df
 
-    def player_stat(self, stat):
+    def player_stat(self, stat) -> pd.DataFrame:
         '''
-        TODO get opponents stats, home and away
+        Creates a dataframe for training purposes
+        TODO get opponents stats, home and away. Potentially get rid of stat?
         '''
         boxscore_df = self.player_career_boxscore()
         pts_df = pd.DataFrame()
