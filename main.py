@@ -26,7 +26,7 @@ def make_player_csv(player, csv_name : str, stat : str):
    stats_df.dropna(inplace=True)
    stats_df.to_csv(csv_name, index = False)
    s3 = boto3.client("s3")
-   s3.upload_file(csv_name,'prasun-nba-model',csv_name)
+   s3.upload_file(csv_name,'s3://prasun-nba-model/csv_files/',csv_name)
 
 
 def opp_data(df):
@@ -38,6 +38,7 @@ def opp_data(df):
     opponents_free_throw_rate_list = []
     opponents_orebounding_pct_list = []
     pace_list = []
+    def_rtg_list= []
     team_dict = {}
     df = df.drop(df[df['SEASON_ID'] < '22018'].index)
     for opp, season_id in zip(df['OPPONENT'],df['SEASON_ID']):
@@ -53,7 +54,7 @@ def opp_data(df):
         opponents_free_throw_rate_list.append(team_df['OPP_FTA_RATE'][0])
         opponents_orebounding_pct_list.append(team_df['OPP_OREB_PCT'][0])
         pace_list.append(adv_stats_df['PACE'][0])
-        print("SEASON_ID: ",season_id)
+        def_rtg_list.append(adv_stats_df['DEF_RTG'][0])
         time.sleep(1)
 
     df["OPP_EFG_PCT"]= np.array(opponents_efga_list)
@@ -102,6 +103,10 @@ if __name__ == "__main__":
     # print(results)
 
     a_edwards = Player('Anthony Edwards', 'Minnesota')
-    stats = a_edwards.player_career_boxscore()
-    print(stats)
+    stats = a_edwards.player_boxscores('2023-24')
+    print(stats.columns)
+    stats.to_csv("testing_file.csv")
     twolves = Team('Minnesota')
+    ADV_stats = a_edwards.player_career_boxscore()
+    print(ADV_stats.columns)
+    ADV_stats.to_csv('testing_file2.csv')

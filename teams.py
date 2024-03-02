@@ -1,5 +1,6 @@
 from nba_api.stats.static import teams
-from nba_api.stats.endpoints import TeamPlayerDashboard, PlayerDashboardByGameSplits, LeagueGameLog, LeagueDashTeamStats, LeagueDashPtTeamDefend
+from nba_api.stats.endpoints import TeamPlayerDashboard, PlayerDashboardByGameSplits, LeagueGameLog, LeagueDashTeamStats, LeagueDashPtTeamDefend, TeamGameLogs
+from nba_api.stats.library.parameters import Season
 from util import mergeTables
 import pandas as pd
 class Team:
@@ -93,7 +94,23 @@ class Team:
         return stats
         
     def get_team_def(self):
-        df = LeagueDashPtTeamDefend(team_id_nullable=self.id, )
+        df = LeagueDashPtTeamDefend(team_id_nullable=self.id).get_data_frames()[0]
+
+    def get_team_game_log(self, season=Season.current_season) -> pd.DataFrame:
+        """
+        Merges the team four factor and advance box scores into one dataframe, that can used for training.
+        Only returns one season at a time. 
+        Parameters:
+            season (string): format 2023-24
+        Returns:
+            dataframe
+        """
+        ff_df = TeamGameLogs(team_id_nullable=self.id, measure_type_player_game_logs_nullable='Four Factors',season_nullable=season).get_data_frames()[0]
+        ff_df = ff_df.drop(columns=['TEAM_NAME',"GP_RANK","W_RANK","L_RANK","W_PCT_RANK","MIN_RANK","EFG_PCT_RANK","FTA_RATE_RANK","TM_TOV_PCT_RANK","OREB_PCT_RANK","AVAILABLE_FLAG","MIN"])
+        adv_df = TeamGameLogs(team_id_nullable=self.id, measure_type_player_game_logs_nullable='Advanced',season_nullable=season).get_data_frames()[0]
+        adv_df = adv_df.drop(columns=['TEAM_NAME','EFG_PCT','TM_TOV_PCT','OREB_PCT',"GP_RANK","W_RANK","L_RANK","W_PCT_RANK","MIN_RANK","EFG_PCT_RANK","TM_TOV_PCT_RANK","OREB_PCT_RANK","AVAILABLE_FLAG","MIN"])
+        df = ff_df.merge(adv_df,on=['GAME_ID','SEASON_YEAR','TEAM_ID','GAME_DATE','MATCHUP', 'TEAM_ABBREVIATION', 'WL'])
+        return df
     #TODO TeamAndPlayersVsPlayers CAN BE USED FOR LINEUP COMPARISON
 
 

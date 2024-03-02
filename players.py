@@ -93,10 +93,20 @@ class Player:
         """
         Returns player boxscore per game for entire career
         """
-        gamelog_df = PlayerGameLog(player_id=self.id,season=SeasonAll.all).get_data_frames()[0]
-        #gamelog_df = PlayerGameLogs(player_id_nullable=self.id,season_nullable=SeasonNullable.current_season,measure_type_player_game_logs_nullable='Advanced').get_data_frames()[0]
+        #gamelog_df = PlayerGameLog(player_id=self.id,season=SeasonAll.all,measure_type='Advanced').get_data_frames()[0]
+        gamelog_df = PlayerGameLogs(player_id_nullable=self.id,season_nullable=SeasonNullable.current_season,measure_type_player_game_logs_nullable='Advanced').get_data_frames()[0]
         return gamelog_df
-            
+    
+    def player_boxscores(self, season) -> pd.DataFrame:
+        adv_stats_df = PlayerGameLogs(player_id_nullable=self.id,measure_type_player_game_logs_nullable='Advanced', season_nullable=season).get_data_frames()[0]
+        adv_stats_df = adv_stats_df.drop(columns=['NICKNAME','TEAM_NAME','TEAM_ID','TEAM_ABBREVIATION','GAME_DATE','MATCHUP','WL','MIN','FGM','FGA','FG_PCT','AVAILABLE_FLAG'])
+        adv_stats_df.drop(list(adv_stats_df.filter(regex='RANK')), axis=1, inplace=True)
+        stats_df = PlayerGameLogs(player_id_nullable=self.id,season_nullable=season).get_data_frames()[0]
+        stats_df = stats_df.drop(columns=['NICKNAME','WL','GP_RANK','W_RANK','L_RANK','W_PCT_RANK','MIN_RANK','FGM_RANK','FGA_RANK','FG_PCT_RANK','AVAILABLE_FLAG','NBA_FANTASY_PTS','DD2','TD3','WNBA_FANTASY_PTS'])
+        stats_df.drop(list(stats_df.filter(regex='RANK')), axis=1, inplace=True)
+        gamelog_df = stats_df.merge(adv_stats_df,on=['PLAYER_ID','SEASON_YEAR','PLAYER_NAME','GAME_ID'])
+        return gamelog_df
+    
     def player_minutes(self):
         '''
         Returns df for minutes projection. Not sure if needed. Could be useful for injuries.
