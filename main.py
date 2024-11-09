@@ -11,7 +11,7 @@ import numpy as np
 
 
 
-def make_player_csv(player, csv_name : str, stat : str):
+def make_player_csv(player : Player, csv_name : str, stat : str) -> pd.DataFrame:
    """
    Creates a csv file of season id, game played, opponent, desired stat, rolling average minutes
    Parameters:
@@ -27,9 +27,10 @@ def make_player_csv(player, csv_name : str, stat : str):
    stats_df.to_csv(csv_name, index = False)
    s3 = boto3.client("s3")
    s3.upload_file(csv_name,'s3://prasun-nba-model/csv_files/',csv_name)
+   return stats_df
 
 
-def opp_data(df):
+def opp_data(df : pd.DataFrame) -> pd.DataFrame:
     """
     Gets opponent Four Factor stats for each individual game to train against.
     TODO: Takes some time to get this data. Figure out how to make it more efficient
@@ -64,12 +65,20 @@ def opp_data(df):
 
     return df
 
-def create_model_from_scratch(player, year: int, csv_name : str, model_filename : str, stat : str, predictors: list):
+def dataset_creator(player:Player, team: Team) -> pd.DataFrame:
+    player_stats = player_pts(player,'2023-24')
+    team_stats = team_stat(team,'2023-24')
+    team_stats = team_stats.drop(columns=['LOCATION',"OPPONENT"])
+    df = player_stats.merge(team_stats,on=['GAME_ID','SEASON_YEAR','GAME_DATE'])
+    return df
+
+def create_model(year: int, stats : pd.DataFrame, model_filename : str, stat : str, predictors: list):
     """
     TODO: Upload csv files to aws or make a database of players from the csv files
     """
-    make_player_csv(player, csv_name, stat)
-    stats = pd.read_csv(csv_name)
+    # make_player_csv(player, csv_name, stat)
+    # stats = pd.read_csv(csv_name)
+    
     results = run_ridge_model(stats_df=stats,year= year, predictors=predictors, model_filename=model_filename,stat_column=stat,)
     results.to_csv("test_results.csv", index = False)
 
@@ -94,19 +103,44 @@ def predict_result(model_filename : str, city: str, minutes: float):
     result = loaded_model.predict(opp_df)
     return result
 
+def team_stat(team : Team, season : str) -> pd.DataFrame:
+    '''
+    Creates a dataframe for training purposes
+    TODO get opponents stats, home and away. Potentially get rid of stat?
+    '''
+    boxscore_df = team.get_team_game_log(season=season)
+    home_list = ["Away" if '@' in x else "Home" for x in boxscore_df['MATCHUP']]
+    opp_team = [x.split()[2] for x in boxscore_df['MATCHUP']]
+    pts_df=boxscore_df[['SEASON_YEAR','GAME_ID','GAME_DATE','OPP_EFG_PCT','OPP_FTA_RATE','OPP_OREB_PCT','DEF_RATING','PACE']].copy()
+    pts_df['LOCATION'] = home_list
+    pts_df['OPPONENT'] = opp_team
+    pts_df.dropna(inplace=True)
+    return pts_df
+
+def player_pts(player : Player, season: str) -> pd.DataFrame:
+    boxscore_df = player.player_boxscores(season=season)
+    home_list = ["Away" if '@' in x else "Home" for x in boxscore_df['MATCHUP']]
+    opp_team = [x.split()[2] for x in boxscore_df['MATCHUP']]
+    pts_df=boxscore_df[['SEASON_YEAR','GAME_ID','GAME_DATE','PTS','TS_PCT','MIN']].copy()
+    pts_df['LOCATION'] = home_list
+    pts_df['OPPONENT'] = opp_team
+    pts_df.dropna(inplace=True)
+    return pts_df
 
 if __name__ == "__main__":
-    # lebron = Player('Jayson Tatum','Boston')
-    # predictors=["OPP_EFG_PCT","OPP_FTA_RATE","OPP_OREB_PCT",'PACE','MINUTES']
-    # create_model_from_scratch(player=lebron,csv_name="jayson_tatum_pts.csv",year=22022,predictors=predictors,stat='PTS',model_filename="jayson_tatum_points_model.sav")
-    # results = predict_result('anthony_edwards_points_model.sav','Atlanta',37.8)
-    # print(results)
+    antman = Player('Anthony Edwards','Minnesota')
+    pts_df = make_player_csv(player=antman,csv_name='anthony_edwards_pts.csv',stat='PTS')
+    predictors=["OPP_EFG_PCT","OPP_FTA_RATE","OPP_OREB_PCT",'PACE','MINUTES']
+    create_model(year=22022, stats=pts_df, predictors=predictors,stat='PTS',model_filename="anthony_edwards_points_model.sav")
+    results = predict_result('anthony_edwards_points_model.sav','Atlanta',37.8)
+    print(results)
 
-    a_edwards = Player('Anthony Edwards', 'Minnesota')
-    stats = a_edwards.player_boxscores('2023-24')
-    print(stats.columns)
-    stats.to_csv("testing_file.csv")
-    twolves = Team('Minnesota')
-    ADV_stats = a_edwards.player_career_boxscore()
-    print(ADV_stats.columns)
-    ADV_stats.to_csv('testing_file2.csv')
+    # a_edwards = Player('Anthony Edwards', 'Minnesota')
+    # twolves = Team('Minnesota')
+    # df = dataset_creator(a_edwards,twolves)
+    # print(df.columns)
+    # df.to_csv("testing_file.csv")
+    # bx23_df = twolves.get_team_game_log()
+    # bx22_df = twolves.get_team_game_log(season='2022-23')
+    # bx23_df = pd.concat([bx23_df,bx22_df], ignore_index=True)
+    # bx23_df.to_csv('testing_file2.csv')

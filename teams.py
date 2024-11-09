@@ -3,6 +3,8 @@ from nba_api.stats.endpoints import TeamPlayerDashboard, PlayerDashboardByGameSp
 from nba_api.stats.library.parameters import Season
 from util import mergeTables
 import pandas as pd
+from players import Player
+from functools import lru_cache
 class Team:
     def __init__(self, city : str) -> None:
         self.city = city
@@ -42,11 +44,8 @@ class Team:
     #     final = mergeTables(team_career_stats,team_career_adv_stats)
     #     return final
     
-    def get_team_lineup_stats(self, lineup):
-        lineup_stats = pd.DataFrame()
-        for player in lineup:
-            lineup_stats = pd.concat([lineup_stats, player.get_current_season_stats()])
-        return lineup_stats
+    def get_team_lineup_stats(self, lineup : list[Player]) -> pd.DataFrame:
+        return pd.concat([player.get_current_season_stats() for player in lineup])
 
     def team_scores(self):
         boxscore = LeagueGameLog().get_data_frames()[0]
@@ -64,7 +63,8 @@ class Team:
     #     final = mergeTables(team_career_stats,team_career_adv_stats)
     #     return final
 
-    def get_season(self, season_id : str):
+    @staticmethod
+    def get_season(season_id : str) -> str:
         year = season_id[-2:]
         year_dict={'23':'2023-24','22':'2022-23','21':'2021-22','20':'2020-21','19':'2019-20','18':'2018-2019','17':'2017-2018'}
         return year_dict.get(year)
@@ -106,22 +106,25 @@ class Team:
             dataframe
         """
         ff_df = TeamGameLogs(team_id_nullable=self.id, measure_type_player_game_logs_nullable='Four Factors',season_nullable=season).get_data_frames()[0]
-        ff_df = ff_df.drop(columns=['TEAM_NAME',"GP_RANK","W_RANK","L_RANK","W_PCT_RANK","MIN_RANK","EFG_PCT_RANK","FTA_RATE_RANK","TM_TOV_PCT_RANK","OREB_PCT_RANK","AVAILABLE_FLAG","MIN"])
+        ff_df.drop(list(ff_df.filter(regex='RANK')), axis=1, inplace=True)
+        ff_df = ff_df.drop(columns=['TEAM_NAME',"AVAILABLE_FLAG","MIN"])
         adv_df = TeamGameLogs(team_id_nullable=self.id, measure_type_player_game_logs_nullable='Advanced',season_nullable=season).get_data_frames()[0]
-        adv_df = adv_df.drop(columns=['TEAM_NAME','EFG_PCT','TM_TOV_PCT','OREB_PCT',"GP_RANK","W_RANK","L_RANK","W_PCT_RANK","MIN_RANK","EFG_PCT_RANK","TM_TOV_PCT_RANK","OREB_PCT_RANK","AVAILABLE_FLAG","MIN"])
+        adv_df.drop(list(adv_df.filter(regex='RANK')), axis=1, inplace=True)
+        adv_df = adv_df.drop(columns=['TEAM_NAME','EFG_PCT','TM_TOV_PCT','OREB_PCT',"AVAILABLE_FLAG","MIN"])
         df = ff_df.merge(adv_df,on=['GAME_ID','SEASON_YEAR','TEAM_ID','GAME_DATE','MATCHUP', 'TEAM_ABBREVIATION', 'WL'])
         return df
+    
     #TODO TeamAndPlayersVsPlayers CAN BE USED FOR LINEUP COMPARISON
 
-
+@lru_cache(maxsize=None)
 def abrv_team_dict(team : str):
     """
     Dictionary of all the city with their abbreviations
-    """
+    """    
     abrv_team_dict = {'ATL': "Atlanta", 'BKN': 'Brooklyn', 'BOS': 'Boston', 'CHA': 'Charlotte', 'CHI': 'Chicago', 'CLE': 'Cleveland', 'DAL': 'Dallas', 'DEN': 'Denver', 'DET': 'Detroit', 'GSW': 'Golden State',
                       'HOU': "Houston", 'IND': 'Indiana', 'MEM': 'Memphis', 'MIA': 'Miami', 'MIL': 'Milwaukee', 'MIN': 'Minnesota', 'NOP': 'New Orleans', 'NYK': 'New York', 'LAC': 'Los Angeles Clippers', 'LAL': 'Los Angeles Lakers', 
                       'OKC': 'Oklahoma City', 'ORL': 'Orlando', 'PHI': 'Philadelphia', 'PHX': 'Phoenix', 'POR': 'Portland', 'SAC': 'Sacramento', 'SAS': 'San Antonio', 'TOR': 'Toronto', 'UTA': 'Utah', 'WAS': 'Washington'}
-    
+
     return abrv_team_dict.get(team)
 
 

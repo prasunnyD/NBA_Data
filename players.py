@@ -2,6 +2,7 @@ from nba_api.stats.endpoints import playercareerstats, PlayerDashboardByGameSpli
 from nba_api.stats.static import players
 from nba_api.stats.library.parameters import SeasonAll, SeasonNullable
 import pandas as pd
+import logging
 from util import mergeTables
 class Player:
     def __init__(self, name : str, team : str) -> None:
@@ -93,7 +94,7 @@ class Player:
         """
         Returns player boxscore per game for entire career
         """
-        #gamelog_df = PlayerGameLog(player_id=self.id,season=SeasonAll.all,measure_type='Advanced').get_data_frames()[0]
+        # gamelog_df = PlayerGameLog(player_id=self.id,season=SeasonAll.all,measure_type='Advanced').get_data_frames()[0]
         gamelog_df = PlayerGameLogs(player_id_nullable=self.id,season_nullable=SeasonNullable.current_season,measure_type_player_game_logs_nullable='Advanced').get_data_frames()[0]
         return gamelog_df
     
@@ -102,8 +103,8 @@ class Player:
         adv_stats_df = adv_stats_df.drop(columns=['NICKNAME','TEAM_NAME','TEAM_ID','TEAM_ABBREVIATION','GAME_DATE','MATCHUP','WL','MIN','FGM','FGA','FG_PCT','AVAILABLE_FLAG'])
         adv_stats_df.drop(list(adv_stats_df.filter(regex='RANK')), axis=1, inplace=True)
         stats_df = PlayerGameLogs(player_id_nullable=self.id,season_nullable=season).get_data_frames()[0]
-        stats_df = stats_df.drop(columns=['NICKNAME','WL','GP_RANK','W_RANK','L_RANK','W_PCT_RANK','MIN_RANK','FGM_RANK','FGA_RANK','FG_PCT_RANK','AVAILABLE_FLAG','NBA_FANTASY_PTS','DD2','TD3','WNBA_FANTASY_PTS'])
         stats_df.drop(list(stats_df.filter(regex='RANK')), axis=1, inplace=True)
+        stats_df = stats_df.drop(columns=['NICKNAME','WL','AVAILABLE_FLAG','NBA_FANTASY_PTS','DD2','TD3','WNBA_FANTASY_PTS'])
         gamelog_df = stats_df.merge(adv_stats_df,on=['PLAYER_ID','SEASON_YEAR','PLAYER_NAME','GAME_ID'])
         return gamelog_df
     
@@ -120,7 +121,7 @@ class Player:
         min_df.dropna(inplace=True)
         return min_df
 
-    def player_stat(self, stat) -> pd.DataFrame:
+    def player_stat(self, stat: str) -> pd.DataFrame:
         '''
         Creates a dataframe for training purposes
         TODO get opponents stats, home and away. Potentially get rid of stat?
@@ -129,8 +130,9 @@ class Player:
         pts_df = pd.DataFrame()
         home_list = ["Away" if '@' in x else "Home" for x in boxscore_df['MATCHUP']]
         opp_team = [x.split()[2] for x in boxscore_df['MATCHUP']]
-        pts_df['SEASON_ID'] = boxscore_df['SEASON_ID']
+        pts_df['SEASON_YEAR'] = boxscore_df['SEASON_YEAR']
         pts_df['GAME_DATE'] = boxscore_df['GAME_DATE']
+        logging.error(boxscore_df.columns)
         pts_df[stat] = boxscore_df[stat]
         pts_df['LOCATION'] = home_list
         pts_df['OPPONENT'] = opp_team
