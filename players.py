@@ -2,6 +2,7 @@ from nba_api.stats.endpoints import playercareerstats, PlayerDashboardByGameSpli
 from nba_api.stats.static import players
 from nba_api.stats.library.parameters import SeasonAll, SeasonNullable
 import pandas as pd
+import polars as pl
 import logging
 from util import mergeTables
 class Player:
@@ -120,6 +121,16 @@ class Player:
         min_df['prev_3_std'] = boxscore_df['MIN'].rolling(3).std()
         min_df.dropna(inplace=True)
         return min_df
+    
+    def player_minutes_polars(self) -> pl.DataFrame:
+        boxscores = PlayerGameLog(player_id=self.id,season=SeasonAll.all).get_dict()
+        boxscores_df = pl.DataFrame(boxscores['resultSets'][0]['rowSet'], schema=boxscores['resultSets'][0]['headers'])
+        return (pl.DataFrame(boxscores_df)
+                .select(
+                    pl.col('MIN'),
+                    pl.col('MIN').rolling_mean(window_size=3).alias('prev_3_avg'),
+                )
+        )
 
     def player_stat(self, stat: str) -> pd.DataFrame:
         '''
@@ -140,6 +151,34 @@ class Player:
         return pts_df
         
 
+    def player_stat_polars(self, stat: str) -> pl.DataFrame:
+        logging.info(f"Getting boxscores for {self.name}...")
+        boxscores = PlayerGameLog(player_id=self.id,season=SeasonAll.all).get_dict()
+        boxscores_df = pl.DataFrame(boxscores['resultSets'][0]['rowSet'], schema=boxscores['resultSets'][0]['headers'])
+        home_list = ["Away" if '@' in x else "Home" for x in boxscores_df['MATCHUP']]
+        opp_team = [x.split()[2] for x in boxscores_df['MATCHUP']]
+        boxscores_df = boxscores_df.select(['SEASON_ID', 'GAME_DATE' ,stat, 'MIN'])
+        boxscores_df = boxscores_df.with_columns([
+            pl.Series(name="LOCATION", values=home_list),
+            pl.Series(name="OPPONENT", values=opp_team)
+        ])
+        logging.info(f"Returning boxscores for {self.name}...")
+        return boxscores_df
 
+    def player_minutes_polars(self) -> pl.DataFrame:
+        '''
+        Returns df for minutes projection. Not sure if needed. Could be useful for injuries.
+        '''
+        boxscores = PlayerGameLog(player_id=self.id,season=SeasonAll.all).get_dict()
+        boxscores_df = pl.DataFrame(boxscores['resultSets'][0]['rowSet'], schema=boxscores['resultSets'][0]['headers'])
+        return (pl.DataFrame(boxscores_df)
+                .select(
+                    pl.col('MIN'),
+                    pl.col('MIN').rolling_mean(window_size=3).alias('prev_3_avg'),
+                    pl.col('MIN').rolling_median(window_size=3).alias('prev_3_median'),
+                    pl.col('MIN').rolling_std(window_size=3).alias('prev_3_std')
+                )
+                .drop_nulls()
+        )
 
 

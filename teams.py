@@ -2,9 +2,12 @@ from nba_api.stats.static import teams
 from nba_api.stats.endpoints import TeamPlayerDashboard, PlayerDashboardByGameSplits, LeagueGameLog, LeagueDashTeamStats, LeagueDashPtTeamDefend, TeamGameLogs
 from nba_api.stats.library.parameters import Season
 from util import mergeTables
+import polars as pl
 import pandas as pd
 from players import Player
 from functools import lru_cache
+import logging
+
 class Team:
     def __init__(self, city : str) -> None:
         self.city = city
@@ -80,6 +83,21 @@ class Team:
         season_year = self.get_season(season_id)
         stats = LeagueDashTeamStats(team_id_nullable=self.id,measure_type_detailed_defense='Four Factors',season=season_year, last_n_games=last_number_games, timeout=100).get_data_frames()[0]
         return stats
+    
+    def get_team_opp_efga_polars(self, season_id: str, last_number_games : str = "0") -> pl.DataFrame:
+        """
+        Parameters:
+            season_id(string)
+            last_number_games (string): Returns stats of last number of games
+        Returns:
+            stats (dataframe)
+        """
+        logging.info(f"Getting team opp efga for {self.city}...")
+        season_year = self.get_season(season_id)
+        stats = LeagueDashTeamStats(team_id_nullable=self.id,measure_type_detailed_defense='Four Factors',season=season_year, last_n_games=last_number_games, timeout=100).get_dict()
+        stats_df = pl.DataFrame(stats['resultSets'][0]['rowSet'], schema=stats['resultSets'][0]['headers'])
+        logging.info(f"Returning team opp efga for {self.city}...")
+        return stats_df
 
     def get_team_adv_stats(self, season_id: str, last_number_games : str = "0") -> pd.DataFrame:
         """
@@ -92,6 +110,21 @@ class Team:
         season_year = self.get_season(season_id)
         stats = LeagueDashTeamStats(team_id_nullable=self.id,measure_type_detailed_defense='Advanced',season=season_year, last_n_games=last_number_games,timeout=100).get_data_frames()[0]
         return stats
+    
+    def get_team_adv_stats_polars(self, season_id: str, last_number_games : str = "0") -> pl.DataFrame:
+        """
+        Parameters:
+            season_id(string)
+            last_number_games (string): Returns stats of last number of games
+        Returns:
+            stats (dataframe)
+        """
+        logging.info(f"Getting team adv stats for {self.city}...")
+        season_year = self.get_season(season_id)
+        stats = LeagueDashTeamStats(team_id_nullable=self.id,measure_type_detailed_defense='Advanced',season=season_year, last_n_games=last_number_games,timeout=100).get_dict()
+        stats_df = pl.DataFrame(stats['resultSets'][0]['rowSet'], schema=stats['resultSets'][0]['headers'])
+        logging.info(f"Returning team adv stats for {self.city}...")
+        return stats_df
         
     def get_team_def(self):
         df = LeagueDashPtTeamDefend(team_id_nullable=self.id).get_data_frames()[0]

@@ -10,6 +10,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import joblib
 import boto3
+import polars as pl
+import logging
+
 
 def RunLinearModel(trainx,trainy,testx,testy):
     lm = LinearRegression()
@@ -19,7 +22,7 @@ def RunLinearModel(trainx,trainy,testx,testy):
     print("R^2= ",r2_score(testy,yhat))
     return lm, yhat
 
-def run_ridge_model(stats_df, year : int, predictors : list, stat_column: str, model_filename: str):
+def run_ridge_model(stats_df : pl.DataFrame, year : int, predictors : list, stat_column: str, model_filename: str):
     """
     Parameters:
         stats_df (dataframe): dataframe of the player's stats that will be trained on
@@ -43,7 +46,45 @@ def run_ridge_model(stats_df, year : int, predictors : list, stat_column: str, m
     save_model_upload_s3(reg,model_filename)
     return comparison
 
-def build_TrainTest(df,column):
+def run_ridge_model_polars(stats_df: pl.DataFrame, year: str, predictors: list, stat_column: str, model_filename: str) -> pl.DataFrame:
+    """
+    Parameters:
+        stats_df (pl.DataFrame): dataframe of the player's stats that will be trained on
+        year (int): model will train on years less than defined year 
+        predictors (list): features the model will train on
+        stat_column (str): stat that is being predicted
+        model_filename (str): name for saving the model
+    """
+    # Split into train and test sets
+    train = (stats_df
+             .filter(pl.col('SEASON_ID') < year)
+             .drop(['SEASON_ID', 'OPPONENT', 'GAME_DATE', 'LOCATION']))
+    
+    test = stats_df.filter(pl.col('SEASON_ID') >= year)
+    
+    # Prepare X and y for training
+    X_train = train.select(predictors).to_numpy()
+    y_train = train.select(stat_column).to_numpy().ravel()
+    
+    # Train model
+    reg = Ridge(alpha=0.1)
+    reg.fit(X_train, y_train)
+    
+    # Make predictions
+    X_test = test.select(predictors).to_numpy()
+    predictions = reg.predict(X_test)
+    
+    # Create comparison DataFrame
+    comparison = (test
+                 .select(['GAME_DATE', 'OPPONENT', stat_column])
+                 .with_columns(pl.Series(name='PREDICTED', values=predictions)))
+    
+    # Save model
+    save_model_upload_s3(reg, model_filename)
+    
+    return comparison
+
+def build_TrainTest(df : pl.DataFrame, column : str):
     Y = df.pop(column)
     X = df
     x_train,x_test,y_train,y_test = train_test_split(X,Y, test_size =.25, random_state =1)
@@ -75,13 +116,17 @@ def linear_regression(csv_name : str, stat : str):
 
     return model
 
-def save_model_upload_s3(model, model_filename : str):
+def save_model_upload_s3(model, model_filename: str):
     """
     Uploads model to s3 bucket
     Parameters:
-        model
-        model_filename
+        model: trained sklearn model
+        model_filename (str): name for saving the model
     """
-    joblib.dump(model,model_filename)
+    logging.info(f"Saving model to {model_filename}")
+    joblib.dump(model, model_filename)
+    
+    logging.info(f"Uploading model to S3")
     s3 = boto3.client("s3")
-    s3.upload_file(model_filename,'prasun-nba-model',model_filename)
+    s3.upload_file(model_filename, 'prasun-nba-model', model_filename)
+    logging.info(f"Model upload complete")
