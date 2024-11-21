@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from main import *
 from pydantic import BaseModel
+from util import Database
 
 app = FastAPI()
 
@@ -56,10 +57,12 @@ def opponent_team_stats(city: str, number_of_days : str):
 def get_team_last_ten_games(city : str) -> dict[str, float]:
     try:
         team = Team(city)
-        team_game_logs = team.get_team_game_log('2023-24').head(10)
-        if team_game_logs.empty:
+        query = f"SELECT GAME_DATE,PTS FROM team_boxscores WHERE TEAM_ID = '{team.id}' LIMIT 10"
+        conn = duckdb.connect("team_boxscores.db")
+        team_game_logs = conn.sql(query).pl()
+        response = player_game_logs.rows_by_key(['GAME_DATE'])
+        if not response:
             raise HTTPException(status_code=404, detail=f"No games found for team: {city}")
-        response = { row['GAME_DATE']: row['PACE'] for _, row in team_game_logs.iterrows()}
     except ValueError:
         raise HTTPException(status_code=404, detail=f"Invalid team city: {city}")
     return response
@@ -69,19 +72,10 @@ def get_player_last_ten_games(name: str, city : str, minutes: float) -> dict[str
     item = PlayerModel(city=city, minutes=minutes)
     try:
         player = Player(name, item.city)
-        player_game_logs = player.player_boxscores('2024-25').head(10)
-        
-        if player_game_logs.empty:
-            raise HTTPException(status_code=404, detail=f"No games found for player: {player.name}")
-                        
-        response = {
-            row['GAME_DATE']: {
-                'points': row['PTS'],
-                'minutes': row['MIN']
-            }
-            for _, row in player_game_logs.iterrows()
-        }
-        
+        query = f"SELECT GAME_DATE,PTS,MIN FROM player_boxscores WHERE Player_ID = '{player.id}' LIMIT 10"
+        conn = duckdb.connect("player_boxscores.db")
+        player_game_logs = conn.sql(query).pl()        
+        response = player_game_logs.rows_by_key(['GAME_DATE'])
         if not response:
             raise HTTPException(
                 status_code=404,

@@ -4,7 +4,9 @@ from nba_api.stats.library.parameters import SeasonAll, SeasonNullable
 import pandas as pd
 import polars as pl
 import logging
+import duckdb 
 from util import mergeTables
+from util import Database
 class Player:
     def __init__(self, name : str, team : str) -> None:
         self.name = name
@@ -109,18 +111,6 @@ class Player:
         gamelog_df = stats_df.merge(adv_stats_df,on=['PLAYER_ID','SEASON_YEAR','PLAYER_NAME','GAME_ID'])
         return gamelog_df
     
-    def player_minutes(self):
-        '''
-        Returns df for minutes projection. Not sure if needed. Could be useful for injuries.
-        '''
-        boxscore_df = self.player_career_boxscore()
-        min_df = pd.DataFrame()
-        min_df['MIN'] = boxscore_df['MIN']
-        min_df['prev_3_avg'] = boxscore_df['MIN'].rolling(3).mean()
-        min_df['prev_3_median'] = boxscore_df['MIN'].rolling(3).median()
-        min_df['prev_3_std'] = boxscore_df['MIN'].rolling(3).std()
-        min_df.dropna(inplace=True)
-        return min_df
     
     def player_minutes_polars(self) -> pl.DataFrame:
         boxscores = PlayerGameLog(player_id=self.id,season=SeasonAll.all).get_dict()
@@ -129,41 +119,66 @@ class Player:
                 .select(
                     pl.col('MIN'),
                     pl.col('MIN').rolling_mean(window_size=3).alias('prev_3_avg'),
+                    pl.col('MIN').rolling_median(window_size=3).alias('prev_3_median'),
+                    pl.col('MIN').rolling_std(window_size=3).alias('prev_3_std')
                 )
         )
 
-    def player_stat(self, stat: str) -> pd.DataFrame:
-        '''
-        Creates a dataframe for training purposes
-        TODO get opponents stats, home and away. Potentially get rid of stat?
-        '''
-        boxscore_df = self.player_career_boxscore()
-        pts_df = pd.DataFrame()
-        home_list = ["Away" if '@' in x else "Home" for x in boxscore_df['MATCHUP']]
-        opp_team = [x.split()[2] for x in boxscore_df['MATCHUP']]
-        pts_df['SEASON_YEAR'] = boxscore_df['SEASON_YEAR']
-        pts_df['GAME_DATE'] = boxscore_df['GAME_DATE']
-        logging.error(boxscore_df.columns)
-        pts_df[stat] = boxscore_df[stat]
-        pts_df['LOCATION'] = home_list
-        pts_df['OPPONENT'] = opp_team
-        pts_df.dropna(inplace=True)
-        return pts_df
+    def player_stat(self,) -> pl.DataFrame:
+        """
+        Creates a polars DataFrame for training purposes with game stats and location info.
         
-
-    def player_stat_polars(self, stat: str) -> pl.DataFrame:
+        Parameters:
+            stat (str): The statistical column to extract (e.g. 'PTS', 'AST', 'REB')
+            
+        Returns:
+            pl.DataFrame: DataFrame containing:
+                - SEASON_ID: Season identifier
+                - GAME_DATE: Date of game
+                - stat: The requested statistical column
+                - MIN: Minutes played
+                - LOCATION: 'Home' or 'Away' 
+                - OPPONENT: Opponent team abbreviation
+                
+        The function processes the player's game logs to extract the specified stat
+        along with contextual information about each game including location and opponent.
+        Null values are preserved in the returned DataFrame.
+        """
         logging.info(f"Getting boxscores for {self.name}...")
         boxscores = PlayerGameLog(player_id=self.id,season=SeasonAll.all).get_dict()
         boxscores_df = pl.DataFrame(boxscores['resultSets'][0]['rowSet'], schema=boxscores['resultSets'][0]['headers'])
         home_list = ["Away" if '@' in x else "Home" for x in boxscores_df['MATCHUP']]
         opp_team = [x.split()[2] for x in boxscores_df['MATCHUP']]
-        boxscores_df = boxscores_df.select(['SEASON_ID', 'GAME_DATE' ,stat, 'MIN'])
         boxscores_df = boxscores_df.with_columns([
             pl.Series(name="LOCATION", values=home_list),
             pl.Series(name="OPPONENT", values=opp_team)
         ])
         logging.info(f"Returning boxscores for {self.name}...")
         return boxscores_df
+    
+    # def player_stat_duckdb(self, stat: str) -> pd.DataFrame:
+    #     logging.info(f"Getting boxscores for {self.name}...")
+    #     boxscores = PlayerGameLog(player_id=self.id,season=SeasonAll.all).get_dict()
+    #     boxscores_df = pl.DataFrame(boxscores['resultSets'][0]['rowSet'], schema=boxscores['resultSets'][0]['headers'])
+    #     # Convert to DuckDB and process
+    #     query = f"""
+    #     SELECT 
+    #         SEASON_ID,
+    #         GAME_DATE,
+    #         {stat},
+    #         MIN,
+    #         CASE 
+    #             WHEN MATCHUP LIKE '%@%' THEN 'Away'
+    #             ELSE 'Home'
+    #         END as LOCATION,
+    #         split_part(MATCHUP, ' ', 3) as OPPONENT
+    #     FROM boxscores_df
+    #     """
+        
+        # result_df = duckdb.query(query).pl()
+        
+        # logging.info(f"Returning processed boxscores for {self.name}...")
+        # return result_df.drop_nulls()
 
     def player_minutes_polars(self) -> pl.DataFrame:
         '''
@@ -180,5 +195,48 @@ class Player:
                 )
                 .drop_nulls()
         )
+    
+    def create_player_boxscore_table(self, conn):
+        """
+        Creates/updates a DuckDB table with player boxscore data.
+        """
+        logging.info(f"Getting boxscores for {self.name}...")
+
+        boxscores_df = self.player_stat()
+
+        # Check if table exists
+        table_exists = conn.execute("""
+            SELECT EXISTS (
+                SELECT 1 
+                FROM information_schema.tables 
+                WHERE table_name = 'player_boxscores'
+            )
+        """).fetchone()[0]
+
+        if not table_exists:
+            logging.info("Creating new player_boxscores table...")
+            conn.execute("""
+                CREATE TABLE player_boxscores AS 
+                SELECT * FROM boxscores_df
+            """)
+        else:
+            logging.info("Updating existing player_boxscores table...")
+            # Register the new data as a view
+            conn.register('new_boxscores', boxscores_df)
+            
+            # Insert only new records
+            conn.execute("""
+                INSERT INTO player_boxscores
+                SELECT n.* 
+                FROM new_boxscores n
+                WHERE NOT EXISTS (
+                    SELECT 1 
+                    FROM player_boxscores p
+                    WHERE p.GAME_ID = n.GAME_ID 
+                    AND p.Player_ID = n.Player_ID
+                )
+            """)
+
+        logging.info(f"Successfully updated boxscores for {self.name} in player_boxscores table")
 
 

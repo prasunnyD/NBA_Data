@@ -10,6 +10,8 @@ import boto3
 import numpy as np
 import polars as pl
 import logging
+from util import Database
+import duckdb
 
 # Configure logging
 logging.basicConfig(
@@ -99,8 +101,8 @@ def opp_data_polars(df : pl.DataFrame) -> pl.DataFrame:
         for attempt in range(max_retries):
             try:
                 team = Team(city)
-                team_df = team.get_team_opp_efga_polars(season_id)
-                adv_stats_df = team.get_team_adv_stats_polars(season_id)
+                team_df = team.get_team_opp_efga(season_id)
+                adv_stats_df = team.get_team_adv_stats(season_id)
                 return {
                     'OPP_EFG_PCT': team_df['OPP_EFG_PCT'][0],
                     'OPP_FTA_RATE': team_df['OPP_FTA_RATE'][0],
@@ -197,8 +199,8 @@ def predict_result_polars(model_filename : str, city: str, minutes: float):
         minutes (float): projected minutes played by player
     """
     opp_team = Team(city)
-    opp_df = opp_team.get_team_opp_efga_polars('22024','5')
-    adv_stats_df = opp_team.get_team_adv_stats_polars('22024','5')
+    opp_df = opp_team.get_team_opp_efga('22024','5')
+    adv_stats_df = opp_team.get_team_adv_stats('22024','5')
     
     opp_df = (opp_df
         .with_columns([
@@ -239,14 +241,28 @@ def player_pts(player : Player, season: str) -> pd.DataFrame:
     pts_df.dropna(inplace=True)
     return pts_df
 
+
 if __name__ == "__main__":
     antman = Player('Anthony Edwards','Minnesota')
-    pts_df = make_player_csv_polars(player=antman,csv_name='anthony_edwards_pts.csv',stat='PTS')
-    predictors=["OPP_EFG_PCT","OPP_FTA_RATE","OPP_OREB_PCT",'PACE','MIN']
-    create_model(year='22022', stats=pts_df, predictors=predictors,stat='PTS',model_filename="anthony_edwards_points_model.sav")
-    results = predict_result_polars('anthony_edwards_points_model.sav','Atlanta',37.8)
-    print(results)
+    # pts_df = make_player_csv_polars(player=antman,csv_name='anthony_edwards_pts.csv',stat='PTS')
+    # predictors=["OPP_EFG_PCT","OPP_FTA_RATE","OPP_OREB_PCT",'PACE','MIN']
+    # create_model(year='22022', stats=pts_df, predictors=predictors,stat='PTS',model_filename="anthony_edwards_points_model.sav")
+    # results = predict_result_polars('anthony_edwards_points_model.sav','Atlanta',37.8)
+    # print(results)
+    conn = duckdb.connect("player_boxscores.db")
+    # antman.create_player_boxscore_table(conn)
+    player_table = conn.query("SELECT * FROM player_boxscores").pl()
+    print(player_table.columns)
 
+
+    query = f"SELECT GAME_DATE,PTS,MIN FROM player_boxscores WHERE Player_ID = '{antman.id}' LIMIT 10"
+    conn = duckdb.connect("player_boxscores.db")
+    player_game_logs = conn.sql(query).pl()
+    response = player_game_logs.rows_by_key(key='GAME_DATE')
+
+    twolves = Team('Minnesota')
+    twolves.create_team_table(conn, season='2020-21')
+    print(conn.sql("SELECT * FROM team_boxscores"))
     # a_edwards = Player('Anthony Edwards', 'Minnesota')
     # twolves = Team('Minnesota')
     # df = dataset_creator(a_edwards,twolves)

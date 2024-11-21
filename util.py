@@ -1,4 +1,6 @@
 import pandas as pd
+import duckdb
+import polars as pl
 # import boto3
 # import logging
 # import gzip
@@ -15,6 +17,17 @@ def mergeTables(df1 : pd.DataFrame, df2 : pd.DataFrame) -> pd.DataFrame:
     """
     result = pd.merge(df1, df2)
     return result
+
+class Database:
+    def __init__(self, db_name : str):
+        self.db_name = db_name
+        self.db = duckdb.connect(db_name)
+
+    def query(self, query : str):
+        return self.db.query(query)
+    
+    def create_table(self, table_name : str, df : pl.DataFrame):
+        self.db.register(table_name, df)
 
 # class S3Sink:
 #     def __init__(self, bucket) -> None:

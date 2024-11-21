@@ -1,6 +1,3 @@
-import wandb
-from wandb.sklearn import plot_precision_recall, plot_feature_importances
-from wandb.sklearn import plot_class_proportions, plot_learning_curve, plot_roc
 from sklearn.linear_model import Ridge, LinearRegression
 from sklearn.metrics import mean_squared_error , r2_score
 from math import sqrt

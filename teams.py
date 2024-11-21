@@ -1,7 +1,6 @@
 from nba_api.stats.static import teams
 from nba_api.stats.endpoints import TeamPlayerDashboard, PlayerDashboardByGameSplits, LeagueGameLog, LeagueDashTeamStats, LeagueDashPtTeamDefend, TeamGameLogs
 from nba_api.stats.library.parameters import Season
-from util import mergeTables
 import polars as pl
 import pandas as pd
 from players import Player
@@ -72,19 +71,8 @@ class Team:
         year_dict={'23':'2023-24','22':'2022-23','21':'2021-22','20':'2020-21','19':'2019-20','18':'2018-2019','17':'2017-2018'}
         return year_dict.get(year)
 
-    def get_team_opp_efga(self, season_id: str, last_number_games : str = "0") -> pd.DataFrame:
-        """
-        Parameters:
-            season_id(string)
-            last_number_games (string): Returns stats of last number of games
-        Returns:
-            stats (dataframe)
-        """
-        season_year = self.get_season(season_id)
-        stats = LeagueDashTeamStats(team_id_nullable=self.id,measure_type_detailed_defense='Four Factors',season=season_year, last_n_games=last_number_games, timeout=100).get_data_frames()[0]
-        return stats
     
-    def get_team_opp_efga_polars(self, season_id: str, last_number_games : str = "0") -> pl.DataFrame:
+    def get_team_opp_efga(self, season_id: str, last_number_games : str = "0") -> pl.DataFrame:
         """
         Parameters:
             season_id(string)
@@ -98,20 +86,8 @@ class Team:
         stats_df = pl.DataFrame(stats['resultSets'][0]['rowSet'], schema=stats['resultSets'][0]['headers'])
         logging.info(f"Returning team opp efga for {self.city}...")
         return stats_df
-
-    def get_team_adv_stats(self, season_id: str, last_number_games : str = "0") -> pd.DataFrame:
-        """
-        Parameters:
-            season_id(string)
-            last_number_games (string): Returns stats of last number of games
-        Returns:
-            stats (dataframe)
-        """
-        season_year = self.get_season(season_id)
-        stats = LeagueDashTeamStats(team_id_nullable=self.id,measure_type_detailed_defense='Advanced',season=season_year, last_n_games=last_number_games,timeout=100).get_data_frames()[0]
-        return stats
     
-    def get_team_adv_stats_polars(self, season_id: str, last_number_games : str = "0") -> pl.DataFrame:
+    def get_team_adv_stats(self, season_id: str, last_number_games : str = "0") -> pl.DataFrame:
         """
         Parameters:
             season_id(string)
@@ -129,23 +105,99 @@ class Team:
     def get_team_def(self):
         df = LeagueDashPtTeamDefend(team_id_nullable=self.id).get_data_frames()[0]
 
-    def get_team_game_log(self, season=Season.current_season) -> pd.DataFrame:
+    def get_team_game_log(self, season=Season.current_season) -> pl.DataFrame:
         """
-        Merges the team four factor and advance box scores into one dataframe, that can used for training.
-        Only returns one season at a time. 
+        Gets team game logs and merges four factors, advanced stats, and regular stats into a single polars DataFrame.
+
         Parameters:
-            season (string): format 2023-24
+            season (str): NBA season in format '2023-24'. Defaults to current season.
+
         Returns:
-            dataframe
+            pl.DataFrame: Combined DataFrame containing:
+                - Four Factors stats (opponent data)
+                - Advanced stats (team data) 
+                - Regular box score stats
+                - Location ('Home'/'Away') and opponent team columns
+
+        The function:
+        1. Gets Four Factors stats and drops unnecessary columns
+        2. Gets Advanced stats and drops redundant columns
+        3. Joins Four Factors and Advanced stats on common columns
+        4. Gets regular box score stats
+        5. Adds location and opponent columns derived from matchup info
+        6. Joins all stats together into final DataFrame
+
+        Example:
+            team = Team('Minnesota')
+            df = team.get_team_game_log_polars('2023-24')
         """
-        ff_df = TeamGameLogs(team_id_nullable=self.id, measure_type_player_game_logs_nullable='Four Factors',season_nullable=season).get_data_frames()[0]
-        ff_df.drop(list(ff_df.filter(regex='RANK')), axis=1, inplace=True)
-        ff_df = ff_df.drop(columns=['TEAM_NAME',"AVAILABLE_FLAG","MIN"])
-        adv_df = TeamGameLogs(team_id_nullable=self.id, measure_type_player_game_logs_nullable='Advanced',season_nullable=season).get_data_frames()[0]
-        adv_df.drop(list(adv_df.filter(regex='RANK')), axis=1, inplace=True)
-        adv_df = adv_df.drop(columns=['TEAM_NAME','EFG_PCT','TM_TOV_PCT','OREB_PCT',"AVAILABLE_FLAG","MIN"])
-        df = ff_df.merge(adv_df,on=['GAME_ID','SEASON_YEAR','TEAM_ID','GAME_DATE','MATCHUP', 'TEAM_ABBREVIATION', 'WL'])
-        return df
+        # Four Factors - opponent data
+        ff_df = TeamGameLogs(team_id_nullable=self.id, measure_type_player_game_logs_nullable='Four Factors',season_nullable=season).get_dict()
+        ff_df = pl.DataFrame(ff_df['resultSets'][0]['rowSet'], schema=ff_df['resultSets'][0]['headers'])
+        ff_df = ff_df.drop(["AVAILABLE_FLAG","MIN","GP_RANK","W_RANK","L_RANK","W_PCT_RANK","MIN_RANK"])
+        # Advanced stats - team data
+        adv_stats = TeamGameLogs(team_id_nullable=self.id, measure_type_player_game_logs_nullable='Advanced',season_nullable=season).get_dict()
+        adv_df = pl.DataFrame(adv_stats['resultSets'][0]['rowSet'], schema=adv_stats['resultSets'][0]['headers'])
+        adv_df = adv_df.drop(["AVAILABLE_FLAG","MIN","GP_RANK","W_RANK","L_RANK","W_PCT_RANK","MIN_RANK","OREB_PCT","EFG_PCT","TM_TOV_PCT","OREB_PCT_RANK","TM_TOV_PCT_RANK","EFG_PCT_RANK"])
+
+        df =ff_df.join(adv_df,on=['GAME_ID','SEASON_YEAR','TEAM_ID','GAME_DATE','MATCHUP', 'TEAM_ABBREVIATION', 'WL','TEAM_NAME'],how="inner")
+
+        reg_stats = TeamGameLogs(team_id_nullable=self.id,season_nullable=season).get_dict()
+        reg_df = pl.DataFrame(reg_stats['resultSets'][0]['rowSet'], schema=reg_stats['resultSets'][0]['headers'])
+        reg_df = reg_df.drop(["AVAILABLE_FLAG","MIN","GP_RANK","W_RANK","L_RANK","W_PCT_RANK","MIN_RANK"])
+        home_list = ["Away" if '@' in x else "Home" for x in reg_df['MATCHUP']]
+        opp_team = [x.split()[2] for x in reg_df['MATCHUP']]
+        reg_df = reg_df.with_columns([
+            pl.Series(name="LOCATION", values=home_list),
+            pl.Series(name="OPPONENT", values=opp_team)
+        ])
+
+        team_df = df.join(reg_df,on=['GAME_ID','SEASON_YEAR','TEAM_ID','GAME_DATE','MATCHUP', 'TEAM_ABBREVIATION', 'WL','TEAM_NAME'],how="inner")
+        return team_df
+        
+    
+    def create_team_table(self, conn, season=Season.current_season):
+        """
+        Creates/updates a DuckDB table with team boxscore data.
+        
+        Parameters:
+            conn: DuckDB connection object
+            season: NBA season to get data for (defaults to current season)
+        """
+        logging.info(f"Getting boxscores for {self.city}...")
+        
+        # Get team data
+        team_df = self.get_team_game_log(season)
+        
+        # Check if table exists
+        table_exists = conn.execute("""
+            SELECT EXISTS (
+                SELECT 1 
+                FROM information_schema.tables 
+                WHERE table_name = 'team_boxscores'
+            )
+        """).fetchone()[0]
+        
+        if not table_exists:
+            logging.info("Creating team_boxscores table...")
+            # Create table with schema from team_df
+            conn.execute("CREATE TABLE team_boxscores AS SELECT * FROM team_df WHERE 1=0")
+            
+        # Register the polars dataframe as a view
+        conn.register('team_boxscores_view', team_df)
+        
+        # Insert new records that don't already exist
+        conn.execute("""
+            INSERT INTO team_boxscores 
+            SELECT * FROM team_boxscores_view 
+            WHERE NOT EXISTS (
+                SELECT 1 FROM team_boxscores t 
+                WHERE t.GAME_ID = team_boxscores_view.GAME_ID
+                AND t.TEAM_ID = team_boxscores_view.TEAM_ID
+            )
+        """)
+
+        logging.info(f"Successfully updated boxscores for {self.city} in team_boxscores table")
     
     #TODO TeamAndPlayersVsPlayers CAN BE USED FOR LINEUP COMPARISON
 
