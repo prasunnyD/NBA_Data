@@ -19,38 +19,54 @@ def RunLinearModel(trainx,trainy,testx,testy):
     print("R^2= ",r2_score(testy,yhat))
     return lm, yhat
 
-def run_ridge_model(stats_df : pl.DataFrame, year : int, predictors : list, stat_column: str, model_filename: str):
-    """
-    Parameters:
-        stats_df (dataframe): dataframe of the player's stats that will be trained on
-        year (integer): model will train on years less than defined year 
-        predictors (list): features the model will train on
-        stat_column (string): stat that is being predicted
-        model_filename (string): 
 
+def run_ridge_model(stats_df: pl.DataFrame, year: str, predictors: list, stat_column: str, model_filename: str) -> pl.DataFrame:
     """
-    train = stats_df[stats_df['SEASON_ID'] < year]
-    train = train.drop(columns=['SEASON_ID','OPPONENT','GAME_DATE','LOCATION'])
-    test = stats_df[stats_df['SEASON_ID'] >= year]
-    reg = Ridge(alpha=0.1)
-    reg.fit(train[predictors], train)
-    model_params = reg.get_params()
-    predictions = reg.predict(test[predictors])
-    probas = reg.predict_proba(test[predictors])
-    importances = reg.feature_importances_
-    predictions = pd.DataFrame(predictions,columns=['Projected Points','OPP_EFG_PCT','OPP_FTA_RATE','OPP_OREB_PCT','PACE','MINUTES'])
-    comparison = pd.concat([test[['GAME_DATE','OPPONENT',stat_column]],predictions],axis=1)
-    save_model_upload_s3(reg,model_filename)
-    return comparison
+    Runs a Ridge regression model on player stats data and returns prediction comparisons.
 
-def run_ridge_model_polars(stats_df: pl.DataFrame, year: str, predictors: list, stat_column: str, model_filename: str) -> pl.DataFrame:
-    """
     Parameters:
-        stats_df (pl.DataFrame): dataframe of the player's stats that will be trained on
-        year (int): model will train on years less than defined year 
-        predictors (list): features the model will train on
-        stat_column (str): stat that is being predicted
-        model_filename (str): name for saving the model
+        stats_df (pl.DataFrame): DataFrame containing player game stats with columns:
+            - SEASON_ID: Season identifier (e.g. '22023')
+            - OPPONENT: Opponent team abbreviation
+            - GAME_DATE: Date of game
+            - LOCATION: Home/Away
+            - [predictors]: Feature columns used for training
+            - [stat_column]: Target stat being predicted
+        year (str): Season ID threshold - model trains on seasons before this year
+        predictors (list): List of feature column names to use for training
+        stat_column (str): Name of target stat column to predict
+        model_filename (str): Filename to save trained model under
+
+    Returns:
+        pl.DataFrame: Comparison DataFrame containing:
+            - GAME_DATE: Date of game
+            - OPPONENT: Opponent team
+            - [stat_column]: Actual stat value
+            - PREDICTED: Model's predicted value
+
+    The function:
+    1. Splits data into train (seasons < year) and test (seasons >= year) sets
+    2. Trains a Ridge regression model on the training data
+    3. Makes predictions on the test set
+    4. Creates a comparison DataFrame of actual vs predicted values
+    5. Saves the trained model to S3 bucket
+
+    Example:
+        >>> df = pl.DataFrame({
+                'SEASON_ID': ['22022', '22023'],
+                'OPPONENT': ['MIN', 'LAL'],
+                'GAME_DATE': ['2022-10-01', '2023-01-15'],
+                'LOCATION': ['Home', 'Away'],
+                'MIN': [35.2, 32.1],
+                'PTS': [28, 25]
+            })
+        >>> results = run_ridge_model(
+                stats_df=df,
+                year='22023',
+                predictors=['MIN'],
+                stat_column='PTS',
+                model_filename='player_points_model.sav'
+            )
     """
     # Split into train and test sets
     train = (stats_df
