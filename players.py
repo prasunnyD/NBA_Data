@@ -237,6 +237,9 @@ class Player:
                 )
             """)
 
+        conn.commit()
+        conn.close()
+
         logging.info(f"Successfully updated boxscores for {self.name} in player_boxscores table")
 
 

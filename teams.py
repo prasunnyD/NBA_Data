@@ -6,6 +6,9 @@ import pandas as pd
 from players import Player
 from functools import lru_cache
 import logging
+ABRV_TEAM_DICT = {'ATL': "Atlanta", 'BKN': 'Brooklyn', 'BOS': 'Boston', 'CHA': 'Charlotte', 'CHI': 'Chicago', 'CLE': 'Cleveland', 'DAL': 'Dallas', 'DEN': 'Denver', 'DET': 'Detroit', 'GSW': 'Golden State',
+                      'HOU': "Houston", 'IND': 'Indiana', 'MEM': 'Memphis', 'MIA': 'Miami', 'MIL': 'Milwaukee', 'MIN': 'Minnesota', 'NOP': 'New Orleans', 'NYK': 'New York', 'LAC': 'Los Angeles Clippers', 'LAL': 'Los Angeles Lakers', 
+                      'OKC': 'Oklahoma City', 'ORL': 'Orlando', 'PHI': 'Philadelphia', 'PHX': 'Phoenix', 'POR': 'Portland', 'SAC': 'Sacramento', 'SAS': 'San Antonio', 'TOR': 'Toronto', 'UTA': 'Utah', 'WAS': 'Washington'}
 
 class Team:
     def __init__(self, city : str) -> None:
@@ -197,7 +200,11 @@ class Team:
             )
         """)
 
+        conn.commit()
+        conn.close()
+
         logging.info(f"Successfully updated boxscores for {self.city} in team_boxscores table")
+        
     
     #TODO TeamAndPlayersVsPlayers CAN BE USED FOR LINEUP COMPARISON
 
@@ -206,11 +213,8 @@ def abrv_team_dict(team : str):
     """
     Dictionary of all the city with their abbreviations
     """    
-    abrv_team_dict = {'ATL': "Atlanta", 'BKN': 'Brooklyn', 'BOS': 'Boston', 'CHA': 'Charlotte', 'CHI': 'Chicago', 'CLE': 'Cleveland', 'DAL': 'Dallas', 'DEN': 'Denver', 'DET': 'Detroit', 'GSW': 'Golden State',
-                      'HOU': "Houston", 'IND': 'Indiana', 'MEM': 'Memphis', 'MIA': 'Miami', 'MIL': 'Milwaukee', 'MIN': 'Minnesota', 'NOP': 'New Orleans', 'NYK': 'New York', 'LAC': 'Los Angeles Clippers', 'LAL': 'Los Angeles Lakers', 
-                      'OKC': 'Oklahoma City', 'ORL': 'Orlando', 'PHI': 'Philadelphia', 'PHX': 'Phoenix', 'POR': 'Portland', 'SAC': 'Sacramento', 'SAS': 'San Antonio', 'TOR': 'Toronto', 'UTA': 'Utah', 'WAS': 'Washington'}
-
-    return abrv_team_dict.get(team)
+    
+    return ABRV_TEAM_DICT.get(team)
 
 
 
