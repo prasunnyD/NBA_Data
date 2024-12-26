@@ -8,9 +8,8 @@ import duckdb
 from util import mergeTables
 from util import Database
 class Player:
-    def __init__(self, name : str, team : str) -> None:
+    def __init__(self, name : str) -> None:
         self.name = name
-        self.team = team
         self.id = self.get_player_id()
 
     def get_player_id(self) -> int:

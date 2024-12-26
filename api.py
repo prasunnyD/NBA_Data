@@ -67,23 +67,41 @@ def get_team_last_ten_games(city : str) -> dict[str, float]:
         raise HTTPException(status_code=404, detail=f"Invalid team city: {city}")
     return response
 
-@app.get("/player-last-10-games/{name}")
-def get_player_last_ten_games(name: str, city : str, minutes: float) -> dict[str, dict[str, float]]:
-    item = PlayerModel(city=city, minutes=minutes)
+class GameStats(BaseModel):
+    points: float
+    assists: float
+    rebounds: float
+    minutes: float
+
+class PlayerGamesResponse(BaseModel):
+    games: dict[str, GameStats]
+
+@app.get("/player-last-{last_number_of_games}-games/{name}")
+def get_player_last_x_games(name: str, last_number_of_games : int) -> dict[str, dict[str, float]]:
     try:
-        player = Player(name, item.city)
-        query = f"SELECT GAME_DATE,PTS,MIN FROM player_boxscores WHERE Player_ID = '{player.id}' LIMIT 10"
+        player = Player(name)
+        query = f"SELECT GAME_DATE,PTS,AST,REB,MIN FROM player_boxscores WHERE Player_ID = '{player.id}' LIMIT {last_number_of_games}"
         conn = duckdb.connect("player_boxscores.db")
-        player_game_logs = conn.sql(query).pl()        
-        response = player_game_logs.rows_by_key(['GAME_DATE'])
+        player_game_logs = conn.sql(query).pl()
+        response = {}
+        for row in player_game_logs.iter_rows(named=True):
+            game_date = row['GAME_DATE']
+            response[game_date] = {
+                'points': float(row['PTS']),
+                'assists': float(row['AST']),
+                'rebounds': float(row['REB']),
+                'minutes': float(row['MIN'])
+            }
         if not response:
             raise HTTPException(
                 status_code=404,
-                detail=f"No games found for {player.name} with minutes >= {item.minutes}"
+                detail=f"No games found for {player.name}"
             )
             
     except ValueError:
         raise HTTPException(status_code=404, detail=f"Invalid Player: {name}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
         
     return response
 
