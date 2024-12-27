@@ -4,9 +4,7 @@ from nba_api.stats.library.parameters import SeasonAll, SeasonNullable
 import pandas as pd
 import polars as pl
 import logging
-import duckdb 
 from util import mergeTables
-from util import Database
 class Player:
     def __init__(self, name : str) -> None:
         self.name = name
@@ -123,7 +121,7 @@ class Player:
                 )
         )
 
-    def player_stat(self,) -> pl.DataFrame:
+    def player_stat(self) -> pl.DataFrame:
         """
         Creates a polars DataFrame for training purposes with game stats and location info.
         
@@ -144,8 +142,8 @@ class Player:
         Null values are preserved in the returned DataFrame.
         """
         logging.info(f"Getting boxscores for {self.name}...")
-        boxscores = PlayerGameLog(player_id=self.id,season=SeasonAll.all).get_dict()
-        boxscores_df = pl.DataFrame(boxscores['resultSets'][0]['rowSet'], schema=boxscores['resultSets'][0]['headers'])
+        boxscores = PlayerGameLog(player_id=self.id).get_dict()
+        boxscores_df = pl.DataFrame(boxscores['resultSets'][0]['rowSet'], schema=boxscores['resultSets'][0]['headers'], orient='row')
         home_list = ["Away" if '@' in x else "Home" for x in boxscores_df['MATCHUP']]
         opp_team = [x.split()[2] for x in boxscores_df['MATCHUP']]
         boxscores_df = boxscores_df.with_columns([
@@ -199,9 +197,9 @@ class Player:
         """
         Creates/updates a DuckDB table with player boxscore data.
         """
-        logging.info(f"Getting boxscores for {self.name}...")
 
         boxscores_df = self.player_stat()
+
 
         # Check if table exists
         table_exists = conn.execute("""
@@ -235,6 +233,8 @@ class Player:
                     AND p.Player_ID = n.Player_ID
                 )
             """)
+
+        conn.commit()
 
         logging.info(f"Successfully updated boxscores for {self.name} in player_boxscores table")
 
