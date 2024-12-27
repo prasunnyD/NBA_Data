@@ -80,7 +80,7 @@ class PlayerGamesResponse(BaseModel):
 def get_player_last_x_games(name: str, last_number_of_games : int) -> dict[str, dict[str, float]]:
     try:
         player = Player(name)
-        query = f"SELECT GAME_DATE,PTS,AST,REB,MIN FROM player_boxscores WHERE Player_ID = '{player.id}' LIMIT {last_number_of_games}"
+        query = f"SELECT GAME_DATE,PTS,AST,REB,MIN FROM player_boxscores WHERE Player_ID = '{player.id}' Order by game_id DESC LIMIT {last_number_of_games}"
         conn = duckdb.connect("player_boxscores.db")
         player_game_logs = conn.sql(query).pl()
         response = {}

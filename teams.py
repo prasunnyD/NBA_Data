@@ -1,5 +1,5 @@
 from nba_api.stats.static import teams
-from nba_api.stats.endpoints import TeamPlayerDashboard, PlayerDashboardByGameSplits, LeagueGameLog, LeagueDashTeamStats, LeagueDashPtTeamDefend, TeamGameLogs
+from nba_api.stats.endpoints import TeamPlayerDashboard, PlayerDashboardByGameSplits, LeagueGameLog, LeagueDashTeamStats, LeagueDashPtTeamDefend, TeamGameLogs, CommonTeamRoster
 from nba_api.stats.library.parameters import Season
 import polars as pl
 import pandas as pd
@@ -207,6 +207,11 @@ class Team:
         
     
     #TODO TeamAndPlayersVsPlayers CAN BE USED FOR LINEUP COMPARISON
+
+    def get_team_roster(self):
+        roster = CommonTeamRoster(team_id=self.id).get_dict()
+        roster_df = pl.DataFrame(roster['resultSets'][0]['rowSet'], schema=roster['resultSets'][0]['headers'], orient='row')
+        return roster_df
 
 @lru_cache(maxsize=None)
 def abrv_team_dict(team : str):

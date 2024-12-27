@@ -12,6 +12,7 @@ import polars as pl
 import logging
 from util import Database
 import duckdb
+import json
 
 # Configure logging
 logging.basicConfig(
@@ -167,23 +168,37 @@ def predict_result_polars(model_filename : str, city: str, minutes: float):
 
 
 if __name__ == "__main__":
-    antman = Player('Anthony Edwards','Minnesota')
-    predictors=["OPP_EFG_PCT","OPP_FTA_RATE","OPP_OREB_PCT",'PACE','MIN']
-    query = f"SELECT GAME_DATE,PTS,MIN FROM player_boxscores WHERE Player_ID = '{antman.id}' LIMIT 10"
-    conn = duckdb.connect("player_boxscores.db")
-    pts_df = conn.sql(query).pl()
-    create_model(year='22022', stats=pts_df, predictors=predictors,stat='PTS',model_filename="anthony_edwards_points_model.sav")
-    results = predict_result_polars('anthony_edwards_points_model.sav','Atlanta',37.8)
-    print(results)
-    
+    antman = Player('Anthony Edwards')
+    # predictors=["OPP_EFG_PCT","OPP_FTA_RATE","OPP_OREB_PCT",'PACE','MIN']
+    # query = f"SELECT GAME_DATE,PTS,MIN FROM player_boxscores WHERE Player_ID = '{antman.id}' LIMIT 10"
+    # conn = duckdb.connect("player_boxscores.db")
+    # pts_df = conn.sql(query).pl()
+    # create_model(year='22022', stats=pts_df, predictors=predictors,stat='PTS',model_filename="anthony_edwards_points_model.sav")
+    # results = predict_result_polars('anthony_edwards_points_model.sav','Atlanta',37.8)
+    # print(results)
 
 
-    query = f"SELECT GAME_DATE,PTS,MIN FROM player_boxscores WHERE Player_ID = '{antman.id}' LIMIT 10"
+
+    query = f"SELECT GAME_DATE,PTS, AST, REB, MIN FROM player_boxscores WHERE Player_ID = '{antman.id}' ORDER BY game_id DESC LIMIT 30"
     conn = duckdb.connect("player_boxscores.db")
     player_game_logs = conn.sql(query).pl()
-    response = player_game_logs.rows_by_key(key='GAME_DATE')
+    # # response = player_game_logs.rows_by_key(key='GAME_DATE')
+    # for key, value in response.items():
+    response = {}
+    for row in player_game_logs.iter_rows(named=True):
+        game_date = row['GAME_DATE']
+        response[game_date] = {
+            'points': float(row['PTS']),
+            'assists': float(row['AST']),
+            'rebounds': float(row['REB']),
+            'minutes': float(row['MIN'])
+        }
 
-    twolves = Team('Minnesota')
-    twolves.create_team_table(conn, season='2020-21')
-    print(conn.sql("SELECT * FROM team_boxscores"))
-
+    twolves = Team('Boston')
+    roster = twolves.get_team_roster()['PLAYER'].to_list()
+    try:
+        for name in roster:
+            player = Player(name)
+            player.create_player_boxscore_table(conn)
+    except Exception as e:
+        print(f"Error creating player boxscore table for {name}: {e}")
