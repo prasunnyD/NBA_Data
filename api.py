@@ -4,6 +4,8 @@ from main import *
 from pydantic import BaseModel
 from util import Database
 from nba_api.live.nba.endpoints import scoreboard
+from nba_api.stats.endpoints import CommonTeamRoster
+
 from datetime import datetime
 
 app = FastAPI()
@@ -68,6 +70,24 @@ def get_team_last_ten_games(city : str) -> dict[str, float]:
     except ValueError:
         raise HTTPException(status_code=404, detail=f"Invalid team city: {city}")
     return response
+
+
+@app.get("/team-roster/{city}")
+def get_team_roster(city : str):
+    try:
+        team = Team(city)
+        roster_list = team.get_team_roster()
+        # roster = CommonTeamRoster(team_id=team.id).get_dict()
+        # roster_df = pl.DataFrame(roster['resultSets'][0]['rowSet'], schema=roster['resultSets'][0]['headers'], orient='row')
+        # roster_list = roster_df['PLAYER'].to_list()
+        response = dict()
+        response[city] = roster_list
+        if not response:
+            raise HTTPException(status_code=404, detail=f"No team members found for team: {city}")
+    except ValueError:
+        raise HTTPException(status_code=404, detail=f"Invalid team city: {city}")
+    return response
+    
 
 class GameStats(BaseModel):
     points: float

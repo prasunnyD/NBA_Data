@@ -211,7 +211,8 @@ class Team:
     def get_team_roster(self):
         roster = CommonTeamRoster(team_id=self.id).get_dict()
         roster_df = pl.DataFrame(roster['resultSets'][0]['rowSet'], schema=roster['resultSets'][0]['headers'], orient='row')
-        return roster_df
+        roster_list = roster_df['PLAYER'].to_list()
+        return roster_list
 
 @lru_cache(maxsize=None)
 def abrv_team_dict(team : str):
