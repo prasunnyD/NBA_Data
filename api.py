@@ -3,6 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from main import *
 from pydantic import BaseModel
 from util import Database
+from nba_api.live.nba.endpoints import scoreboard
+from datetime import datetime
 
 app = FastAPI()
 
@@ -106,3 +108,13 @@ def get_player_last_x_games(name: str, last_number_of_games : int) -> dict[str, 
     return response
 
 
+@app.get("/scoreboard") # Cache until midnight
+def get_scoreboard():
+    games = scoreboard.ScoreBoard().games.get_dict()
+    response = {}
+    for game in games:
+        response[game['gameId']] = {
+            'home_team': game['homeTeam']['teamCity'] + ' ' + game['homeTeam']['teamName'],
+            'away_team': game['awayTeam']['teamCity'] + ' ' + game['awayTeam']['teamName']
+        }
+    return response
