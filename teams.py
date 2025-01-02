@@ -222,6 +222,28 @@ def abrv_team_dict(team : str):
     
     return ABRV_TEAM_DICT.get(team)
 
+def get_teams_opponent_stats():
+    stats = LeagueDashTeamStats(measure_type_detailed_defense='Opponent',per_mode_detailed='PerGame', last_n_games='10').get_dict()
+    stats_df = pl.DataFrame(stats['resultSets'][0]['rowSet'], schema=stats['resultSets'][0]['headers'], orient='row')
+    return stats_df
+
+def get_teams_defense_stats():
+    stats = LeagueDashTeamStats(measure_type_detailed_defense='Defense',per_mode_detailed='PerGame', last_n_games='10').get_dict()
+    stats_df = pl.DataFrame(stats['resultSets'][0]['rowSet'], schema=stats['resultSets'][0]['headers'], orient='row')
+    return stats_df
+
+def get_teams_four_factors_stats():
+    stats = LeagueDashTeamStats(measure_type_detailed_defense='Four Factors',per_mode_detailed='PerGame', last_n_games='10').get_dict()
+    stats_df = pl.DataFrame(stats['resultSets'][0]['rowSet'], schema=stats['resultSets'][0]['headers'], orient='row')
+    return stats_df
+
+def get_teams_advanced_stats():
+    stats = LeagueDashTeamStats(measure_type_detailed_defense='Advanced',per_mode_detailed='PerGame', last_n_games='10').get_dict()
+    stats_df = pl.DataFrame(stats['resultSets'][0]['rowSet'], schema=stats['resultSets'][0]['headers'], orient='row')
+    return stats_df
+
+
+
 
 
 
