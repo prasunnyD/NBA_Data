@@ -222,25 +222,43 @@ def abrv_team_dict(team : str):
     
     return ABRV_TEAM_DICT.get(team)
 
-def get_teams_opponent_stats():
+def get_teams_opponent_stats(conn):
     stats = LeagueDashTeamStats(measure_type_detailed_defense='Opponent',per_mode_detailed='PerGame', last_n_games='10').get_dict()
     stats_df = pl.DataFrame(stats['resultSets'][0]['rowSet'], schema=stats['resultSets'][0]['headers'], orient='row')
-    return stats_df
+    conn.execute("""
+        CREATE OR REPLACE TABLE teams_opponent_stats AS 
+        SELECT * FROM stats_df
+    """)
+    conn.commit()
 
-def get_teams_defense_stats():
+def get_teams_defense_stats(conn):
     stats = LeagueDashTeamStats(measure_type_detailed_defense='Defense',per_mode_detailed='PerGame', last_n_games='10').get_dict()
     stats_df = pl.DataFrame(stats['resultSets'][0]['rowSet'], schema=stats['resultSets'][0]['headers'], orient='row')
-    return stats_df
+    conn.execute("""
+        CREATE OR REPLACE TABLE teams_defense_stats AS 
+        SELECT * FROM stats_df
+    """)
+    conn.commit()
 
-def get_teams_four_factors_stats():
+def get_teams_four_factors_stats(conn):
     stats = LeagueDashTeamStats(measure_type_detailed_defense='Four Factors',per_mode_detailed='PerGame', last_n_games='10').get_dict()
     stats_df = pl.DataFrame(stats['resultSets'][0]['rowSet'], schema=stats['resultSets'][0]['headers'], orient='row')
-    return stats_df
+    conn.execute("""
+        CREATE OR REPLACE TABLE teams_four_factors_stats AS 
+        SELECT * FROM stats_df
+    """)
+    conn.commit()
 
-def get_teams_advanced_stats():
+def get_teams_advanced_stats(conn):
     stats = LeagueDashTeamStats(measure_type_detailed_defense='Advanced',per_mode_detailed='PerGame', last_n_games='10').get_dict()
     stats_df = pl.DataFrame(stats['resultSets'][0]['rowSet'], schema=stats['resultSets'][0]['headers'], orient='row')
-    return stats_df
+    conn.execute("""
+        CREATE OR REPLACE TABLE teams_advanced_stats AS 
+        SELECT * FROM stats_df
+    """)
+    conn.commit()
+
+
 
 
 

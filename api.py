@@ -5,6 +5,7 @@ from pydantic import BaseModel
 from util import Database
 from nba_api.live.nba.endpoints import scoreboard
 from nba_api.stats.endpoints import CommonTeamRoster
+from nba_api.stats.static import teams
 
 from datetime import datetime
 
@@ -138,3 +139,47 @@ def get_scoreboard():
             'away_team': game['awayTeam']['teamCity'] + ' ' + game['awayTeam']['teamName']
         }
     return response
+
+@app.get("/{team_name}-defense-stats")
+def get_team_defense_stats(team_name : str):
+    team_id = (teams.find_teams_by_city(team_name)[0])['id']
+    response = {}
+    with duckdb.connect("md:nba_data") as local_con:
+        opponent_query = f"SELECT * FROM teams_opponent_stats WHERE TEAM_ID = '{team_id}'"
+        defense_query = f"SELECT * FROM teams_defense_stats WHERE TEAM_ID = '{team_id}'"
+        four_factors_query = f"SELECT * FROM teams_four_factors_stats WHERE TEAM_ID = '{team_id}'"
+        advanced_query = f"SELECT * FROM teams_advanced_stats WHERE TEAM_ID = '{team_id}'"
+        opponent_stats = local_con.sql(opponent_query).pl()
+        defense_stats = local_con.sql(defense_query).pl()
+        four_factors_stats = local_con.sql(four_factors_query).pl()
+        advanced_stats = local_con.sql(advanced_query).pl()
+        response[team_name] = {
+            "OPP_FGA_RANK": opponent_stats['OPP_FGA_RANK'][0],
+            "OPP_FGA": opponent_stats['OPP_FGA'][0],
+            "OPP_FG_PCT_RANK": opponent_stats['OPP_FG_PCT_RANK'][0],
+            "OPP_FG_PCT": opponent_stats['OPP_FG_PCT'][0],
+            "OPP_FTA_RANK": opponent_stats['OPP_FTA_RANK'][0],
+            "OPP_FTA": opponent_stats['OPP_FTA'][0],
+            "OPP_FT_PCT_RANK": opponent_stats['OPP_FT_PCT_RANK'][0],
+            "OPP_FT_PCT": opponent_stats['OPP_FT_PCT'][0],
+            "OPP_REB_RANK": opponent_stats['OPP_REB_RANK'][0],
+            "OPP_REB": opponent_stats['OPP_REB'][0],
+            "OPP_AST_RANK": opponent_stats['OPP_AST_RANK'][0],
+            "OPP_AST": opponent_stats['OPP_AST'][0],
+            "OPP_FG3A_RANK": opponent_stats['OPP_FG3A_RANK'][0],
+            "OPP_FG3A": opponent_stats['OPP_FG3A'][0],
+            "DEF_RATING_RANK": defense_stats['DEF_RATING_RANK'][0],
+            "DEF_RATING": defense_stats['DEF_RATING'][0],
+            "OPP_PTS_PAINT_RANK": defense_stats['OPP_PTS_PAINT_RANK'][0],
+            "OPP_PTS_PAINT": defense_stats['OPP_PTS_PAINT'][0],
+            "PACE_RANK": advanced_stats['PACE_RANK'][0],
+            "PACE": advanced_stats['PACE'][0],
+            "OPP_EFG_PCT_RANK": four_factors_stats['OPP_EFG_PCT_RANK'][0],
+            "OPP_EFG_PCT": four_factors_stats['OPP_EFG_PCT'][0],
+            "OPP_FTA_RATE_RANK": four_factors_stats['OPP_FTA_RATE_RANK'][0],
+            "OPP_FTA_RATE": four_factors_stats['OPP_FTA_RATE'][0],
+            "OPP_OREB_PCT_RANK": four_factors_stats['OPP_OREB_PCT_RANK'][0],
+            "OPP_OREB_PCT": four_factors_stats['OPP_OREB_PCT'][0]
+        }
+    return response
+                                
