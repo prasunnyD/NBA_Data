@@ -208,7 +208,19 @@ class Team:
     
     #TODO TeamAndPlayersVsPlayers CAN BE USED FOR LINEUP COMPARISON
 
-    def get_team_roster(self):
+    def get_team_roster(self) -> list[str]:
+        """
+        Gets the current roster for the team.
+
+        Returns:
+            list[str]: List of player names on the team's current roster.
+
+        Example:
+            >>> team = Team('Atlanta')
+            >>> roster = team.get_team_roster()
+            >>> print(roster)
+            ['Trae Young', 'Dejounte Murray', 'Bogdan Bogdanovic', ...]
+        """
         roster = CommonTeamRoster(team_id=self.id).get_dict()
         roster_df = pl.DataFrame(roster['resultSets'][0]['rowSet'], schema=roster['resultSets'][0]['headers'], orient='row')
         roster_list = roster_df['PLAYER'].to_list()
@@ -221,6 +233,68 @@ def abrv_team_dict(team : str):
     """    
     
     return ABRV_TEAM_DICT.get(team)
+
+def get_teams_opponent_stats(conn):
+    stats = LeagueDashTeamStats(measure_type_detailed_defense='Opponent',per_mode_detailed='PerGame', last_n_games='10').get_dict()
+    stats_df = pl.DataFrame(stats['resultSets'][0]['rowSet'], schema=stats['resultSets'][0]['headers'], orient='row')
+    conn.execute("""
+        CREATE OR REPLACE TABLE teams_opponent_stats AS 
+        SELECT * FROM stats_df
+    """)
+    conn.commit()
+
+def get_teams_defense_stats(conn):
+    stats = LeagueDashTeamStats(measure_type_detailed_defense='Defense',per_mode_detailed='PerGame', last_n_games='10').get_dict()
+    stats_df = pl.DataFrame(stats['resultSets'][0]['rowSet'], schema=stats['resultSets'][0]['headers'], orient='row')
+    conn.execute("""
+        CREATE OR REPLACE TABLE teams_defense_stats AS 
+        SELECT * FROM stats_df
+    """)
+    conn.commit()
+
+def get_teams_four_factors_stats(conn):
+    stats = LeagueDashTeamStats(measure_type_detailed_defense='Four Factors',per_mode_detailed='PerGame', last_n_games='10').get_dict()
+    stats_df = pl.DataFrame(stats['resultSets'][0]['rowSet'], schema=stats['resultSets'][0]['headers'], orient='row')
+    conn.execute("""
+        CREATE OR REPLACE TABLE teams_four_factors_stats AS 
+        SELECT * FROM stats_df
+    """)
+    conn.commit()
+
+def get_teams_advanced_stats(conn):
+    stats = LeagueDashTeamStats(measure_type_detailed_defense='Advanced',per_mode_detailed='PerGame', last_n_games='10').get_dict()
+    stats_df = pl.DataFrame(stats['resultSets'][0]['rowSet'], schema=stats['resultSets'][0]['headers'], orient='row')
+    conn.execute("""
+        CREATE OR REPLACE TABLE teams_advanced_stats AS 
+        SELECT * FROM stats_df
+    """)
+    conn.commit()
+
+
+def team_stats(conn, stats_type : str, table_name : str):
+    """
+    Creates or replaces a table in the database with team stats based on the specified type.
+
+    Args:
+        conn: Database connection object
+        stats_type (str): Type of stats to retrieve. Valid values are 'Opponent', 'Defense', 'Four Factors', 'Advanced'
+        table_name (str): Name of the table to create/replace in the database
+
+    The function:
+    1. Retrieves team stats from NBA API based on stats_type
+    2. Converts the stats to a Polars DataFrame
+    3. Creates/replaces a table in the database with the stats data
+    """
+    logging.info(f"Getting teams {stats_type} stats...")
+    stats = LeagueDashTeamStats(measure_type_detailed_defense=stats_type,per_mode_detailed='PerGame', last_n_games='10').get_dict()
+    stats_df = pl.DataFrame(stats['resultSets'][0]['rowSet'], schema=stats['resultSets'][0]['headers'], orient='row')
+    conn.execute(f"""
+        CREATE OR REPLACE TABLE {table_name} AS 
+        SELECT * FROM stats_df
+    """)
+    conn.commit()
+    logging.info(f"Successfully populated teams {stats_type} stats...")
+
 
 
 

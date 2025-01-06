@@ -60,6 +60,12 @@ To set up the project, follow these steps:
    poetry install
    ```
 
+4. **Set up MotherDuck token:**
+   Export your MotherDuck token as an environment variable:
+   ```bash
+   export motherduck_token='your-motherduck-token-here'
+   ```
+
 4. **Start virtual environment:**
    ```bash
    poetry shell
@@ -123,6 +129,16 @@ This project includes a REST API built with FastAPI that provides endpoints for 
 - `GET /opponent-team-stats/{city}/{number_of_days}`
   - Retrieves opponent team's advanced statistics
 
+- `GET /{team_name}-defense-stats`
+  - Retrieves defensive statistics for a specific team
+  - Parameters:
+    - `team_name`: Team city name (e.g., "Atlanta")
+  - Returns: Comprehensive defensive metrics including:
+    - Opponent shooting statistics
+    - Defensive rating
+    - Pace metrics
+    - Team rebounding data
+
 ### Running the API
 
 Start the FastAPI server with:
@@ -165,6 +181,17 @@ This will create a deployment that runs daily at 8:00 AM, populating player boxs
 ### Monitoring
 
 You can monitor workflow runs through the Prefect UI at `http://localhost:4200` after starting the server.
+
+## Data Storage
+
+This project uses MotherDuck, a managed DuckDB service, for data storage. To connect:
+
+1. Get your MotherDuck token from [MotherDuck Dashboard](https://app.motherduck.com/)
+2. Export the token as an environment variable:
+   ```bash
+   export MOTHERDUCK_TOKEN='your-token-here'
+   ```
+3. The application will automatically use this token for database connections
 
 
 
