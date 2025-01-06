@@ -6,8 +6,10 @@ from util import Database
 from nba_api.live.nba.endpoints import scoreboard
 from nba_api.stats.endpoints import CommonTeamRoster
 from nba_api.stats.static import teams
-
+import os
 from datetime import datetime
+
+MOTHERDUCK_TOKEN = os.environ.get('motherduck_token')
 
 app = FastAPI()
 
@@ -104,17 +106,17 @@ def get_player_last_x_games(name: str, last_number_of_games : int) -> dict[str, 
     try:
         player = Player(name)
         query = f"SELECT GAME_DATE,PTS,AST,REB,MIN FROM player_boxscores WHERE Player_ID = '{player.id}' Order by game_id DESC LIMIT {last_number_of_games}"
-        conn = duckdb.connect("player_boxscores.db")
-        player_game_logs = conn.sql(query).pl()
-        response = {}
-        for row in player_game_logs.iter_rows(named=True):
-            game_date = row['GAME_DATE']
-            response[game_date] = {
-                'points': float(row['PTS']),
-                'assists': float(row['AST']),
-                'rebounds': float(row['REB']),
-                'minutes': float(row['MIN'])
-            }
+        with duckdb.connect(f"md:nba_data?motherduck_token={MOTHERDUCK_TOKEN}") as conn:
+            player_game_logs = conn.sql(query).pl()
+            response = {}
+            for row in player_game_logs.iter_rows(named=True):
+                game_date = row['GAME_DATE']
+                response[game_date] = {
+                    'points': float(row['PTS']),
+                    'assists': float(row['AST']),
+                    'rebounds': float(row['REB']),
+                    'minutes': float(row['MIN'])
+                }
         if not response:
             raise HTTPException(
                 status_code=404,
@@ -142,17 +144,18 @@ def get_scoreboard():
 
 @app.get("/{team_name}-defense-stats")
 def get_team_defense_stats(team_name : str):
+    
     team_id = (teams.find_teams_by_city(team_name)[0])['id']
     response = {}
-    with duckdb.connect("md:nba_data") as local_con:
+    with duckdb.connect(f"md:nba_data?motherduck_token={MOTHERDUCK_TOKEN}") as conn:
         opponent_query = f"SELECT * FROM teams_opponent_stats WHERE TEAM_ID = '{team_id}'"
         defense_query = f"SELECT * FROM teams_defense_stats WHERE TEAM_ID = '{team_id}'"
         four_factors_query = f"SELECT * FROM teams_four_factors_stats WHERE TEAM_ID = '{team_id}'"
         advanced_query = f"SELECT * FROM teams_advanced_stats WHERE TEAM_ID = '{team_id}'"
-        opponent_stats = local_con.sql(opponent_query).pl()
-        defense_stats = local_con.sql(defense_query).pl()
-        four_factors_stats = local_con.sql(four_factors_query).pl()
-        advanced_stats = local_con.sql(advanced_query).pl()
+        opponent_stats = conn.sql(opponent_query).pl()
+        defense_stats = conn.sql(defense_query).pl()
+        four_factors_stats = conn.sql(four_factors_query).pl()
+        advanced_stats = conn.sql(advanced_query).pl()
         response[team_name] = {
             "OPP_FGA_RANK": opponent_stats['OPP_FGA_RANK'][0],
             "OPP_FGA": opponent_stats['OPP_FGA'][0],
