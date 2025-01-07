@@ -77,19 +77,27 @@ def get_team_last_ten_games(city : str) -> dict[str, float]:
 
 @app.get("/team-roster/{city}")
 def get_team_roster(city : str):
+    print("city selected: ", city)
+    if "Los Angeles" not in city:
+        city = city.split(' ')
+        if len(city) == 2:
+            city = city[0]
+        else:
+            city = city[0:2]
+            city = ' '.join(city) 
+    else:
+        print(city)
+
     try:
         team = Team(city)
-        roster_list = team.get_team_roster()
-        # roster = CommonTeamRoster(team_id=team.id).get_dict()
-        # roster_df = pl.DataFrame(roster['resultSets'][0]['rowSet'], schema=roster['resultSets'][0]['headers'], orient='row')
-        # roster_list = roster_df['PLAYER'].to_list()
-        response = dict()
-        response[city] = roster_list
+        response = team.get_team_roster()
         if not response:
             raise HTTPException(status_code=404, detail=f"No team members found for team: {city}")
     except ValueError:
         raise HTTPException(status_code=404, detail=f"Invalid team city: {city}")
+    print("response: ", response)
     return response
+
     
 
 class GameStats(BaseModel):

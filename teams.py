@@ -208,7 +208,7 @@ class Team:
     
     #TODO TeamAndPlayersVsPlayers CAN BE USED FOR LINEUP COMPARISON
 
-    def get_team_roster(self) -> list[str]:
+    def get_team_roster(self):
         """
         Gets the current roster for the team.
 
@@ -223,8 +223,15 @@ class Team:
         """
         roster = CommonTeamRoster(team_id=self.id).get_dict()
         roster_df = pl.DataFrame(roster['resultSets'][0]['rowSet'], schema=roster['resultSets'][0]['headers'], orient='row')
-        roster_list = roster_df['PLAYER'].to_list()
-        return roster_list
+        roster_df = roster_df.to_pandas()
+        team_mapping = {roster_df['TeamID'].iloc[0]: self.city}
+        roster_df["TeamID"] = roster_df["TeamID"].map(team_mapping)
+        result = (
+            roster_df.groupby("TeamID")
+            .apply(lambda x: x[["PLAYER", "NUM", "POSITION"]].to_dict(orient="records"))
+            .to_dict()
+        )
+        return result
 
 @lru_cache(maxsize=None)
 def abrv_team_dict(team : str):
