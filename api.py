@@ -7,7 +7,44 @@ from nba_api.live.nba.endpoints import scoreboard
 from nba_api.stats.endpoints import CommonTeamRoster
 from nba_api.stats.static import teams
 import os
+import logging
 from datetime import datetime
+
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,  # Set the logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+    format='%(asctime)s - %(levelname)s - %(message)s',  # Set the format of log messages
+    handlers=[
+        logging.StreamHandler()  # Output to terminal
+    ]
+)
+
+def process_city_name(city):
+    """
+    Processes a city name to handle special cases for cities with multiple words,
+    such as 'Los Angeles'.
+
+    Args:
+        city (str): The name of the city.
+
+    Returns:
+        str: The processed city name.
+    """
+    # Check if the city is "Los Angeles" or contains "Los Angeles"
+    if "Los Angeles" in city:
+        logging.info("City selected: %s", city)
+        return city
+
+    # For other cities, process based on word count
+    city_parts = city.split(' ')
+    if len(city_parts) == 2:
+        # Return the first word if the city consists of exactly two words
+        return city_parts[0]
+    else:
+        # Return the first two words joined together if the city has more than two words
+        return ' '.join(city_parts[:2])
+
 
 MOTHERDUCK_TOKEN = os.environ.get('motherduck_token')
 
@@ -77,25 +114,16 @@ def get_team_last_ten_games(city : str) -> dict[str, float]:
 
 @app.get("/team-roster/{city}")
 def get_team_roster(city : str):
-    print("city selected: ", city)
-    if "Los Angeles" not in city:
-        city = city.split(' ')
-        if len(city) == 2:
-            city = city[0]
-        else:
-            city = city[0:2]
-            city = ' '.join(city) 
-    else:
-        print(city)
-
+    logging.info("City selected: %s", city)
     try:
-        team = Team(city)
+        team = Team(process_city_name(city))
         response = team.get_team_roster()
         if not response:
             raise HTTPException(status_code=404, detail=f"No team members found for team: {city}")
     except ValueError:
         raise HTTPException(status_code=404, detail=f"Invalid team city: {city}")
-    print("response: ", response)
+    
+    logging.info("Team roster: %s", response)
     return response
 
     
