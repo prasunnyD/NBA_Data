@@ -24,12 +24,6 @@ def process_city_name(city):
     """
     Processes a city name to handle special cases for cities with multiple words,
     such as 'Los Angeles'.
-
-    Args:
-        city (str): The name of the city.
-
-    Returns:
-        str: The processed city name.
     """
     # Check if the city is "Los Angeles" or contains "Los Angeles"
     if "Los Angeles" in city:
