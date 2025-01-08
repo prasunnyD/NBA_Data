@@ -11,15 +11,6 @@ import logging
 from datetime import datetime
 
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,  # Set the logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
-    format='%(asctime)s - %(levelname)s - %(message)s',  # Set the format of log messages
-    handlers=[
-        logging.StreamHandler()  # Output to terminal
-    ]
-)
-
 def process_city_name(city):
     """
     Processes a city name to handle special cases for cities with multiple words,
