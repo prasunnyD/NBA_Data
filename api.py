@@ -9,26 +9,7 @@ from nba_api.stats.static import teams
 import os
 import logging
 from datetime import datetime
-
-
-def process_city_name(city):
-    """
-    Processes a city name to handle special cases for cities with multiple words,
-    such as 'Los Angeles'.
-    """
-    # Check if the city is "Los Angeles" or contains "Los Angeles"
-    if "Los Angeles" in city:
-        logging.info("City selected: %s", city)
-        return city
-
-    # For other cities, process based on word count
-    city_parts = city.split(' ')
-    if len(city_parts) == 2:
-        # Return the first word if the city consists of exactly two words
-        return city_parts[0]
-    else:
-        # Return the first two words joined together if the city has more than two words
-        return ' '.join(city_parts[:2])
+from teams import process_city_name
 
 
 MOTHERDUCK_TOKEN = os.environ.get('motherduck_token')
