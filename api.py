@@ -7,10 +7,7 @@ from nba_api.live.nba.endpoints import scoreboard
 from nba_api.stats.endpoints import CommonTeamRoster
 from nba_api.stats.static import teams
 import os
-import logging
 from datetime import datetime
-from teams import process_city_name
-
 
 MOTHERDUCK_TOKEN = os.environ.get('motherduck_token')
 
@@ -80,16 +77,13 @@ def get_team_last_ten_games(city : str) -> dict[str, float]:
 
 @app.get("/team-roster/{city}")
 def get_team_roster(city : str):
-    logging.info("City selected: %s", city)
     try:
-        team = Team(process_city_name(city))
+        team = Team(city)
         response = team.get_team_roster()
         if not response:
             raise HTTPException(status_code=404, detail=f"No team members found for team: {city}")
     except ValueError:
         raise HTTPException(status_code=404, detail=f"Invalid team city: {city}")
-    
-    logging.info("Team roster: %s", response)
     return response
 
     
@@ -146,8 +140,7 @@ def get_scoreboard():
 
 @app.get("/{team_name}-defense-stats")
 def get_team_defense_stats(team_name : str):
-    
-    team_id = (teams.find_teams_by_city(team_name)[0])['id']
+    team_id = (teams.find_teams_by_full_name(team_name)[0])['id']
     response = {}
     with duckdb.connect(f"md:nba_data?motherduck_token={MOTHERDUCK_TOKEN}") as conn:
         opponent_query = f"SELECT * FROM teams_opponent_stats WHERE TEAM_ID = '{team_id}'"

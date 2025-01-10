@@ -19,24 +19,6 @@ logging.basicConfig(
     ]
 )
 
-def process_city_name(city):
-    """
-    Processes a city name to handle special cases for cities with multiple words,
-    such as 'Los Angeles'.
-    """
-    # Check if the city is "Los Angeles" or contains "Los Angeles"
-    if "Los Angeles" in city:
-        logging.info("City selected: %s", city)
-        return city
-
-    # For other cities, process based on word count
-    city_parts = city.split(' ')
-    if len(city_parts) == 2:
-        # Return the first word if the city consists of exactly two words
-        return city_parts[0]
-    else:
-        # Return the first two words joined together if the city has more than two words
-        return ' '.join(city_parts[:2])
 
 class Team:
     def __init__(self, city : str) -> None:
@@ -255,6 +237,7 @@ class Team:
                     ...
                 ]}
         """
+        logging.info("Team selected: %s", self.city)
         roster = CommonTeamRoster(team_id=self.id).get_dict()
         roster_df = pl.DataFrame(
             roster['resultSets'][0]['rowSet'],
@@ -268,7 +251,7 @@ class Team:
         roster_dict = {
             team_name: roster_df.select(["PLAYER", "NUM", "POSITION"]).to_dicts()
             }
-
+        logging.info("Team roster: %s", roster_dict)
         return roster_dict
 
 @lru_cache(maxsize=None)
