@@ -6,7 +6,7 @@ from time import sleep
 import os
 
 MOTHERDUCK_TOKEN = os.environ.get('motherduck_token')
-logger = get_run_logger()
+
 
 @task
 def populate_team_data(conn, team: Team, season : str):
@@ -14,7 +14,7 @@ def populate_team_data(conn, team: Team, season : str):
 
 @task
 def populate_player_data(team: Team):
-    
+    logger = get_run_logger()
     roster = team.get_team_roster()
     logger.info(f"Populating player data for {team.city}")
     
@@ -30,7 +30,7 @@ def populate_player_data(team: Team):
 
 @task
 def populate_team_stats():
-    
+    logger = get_run_logger()
     logger.info("Getting teams stats...")
     with duckdb.connect(f"md:nba_data?motherduck_token={MOTHERDUCK_TOKEN}") as conn:
         team_stats(conn, 'Opponent', 'teams_opponent_stats')
@@ -39,6 +39,20 @@ def populate_team_stats():
         team_stats(conn, 'Advanced', 'teams_advanced_stats')
     logger.info("Successfully populated teams stats...")
 
+@task
+def populate_player_shooting_splits(team : Team):
+    logger = get_run_logger()
+    roster = team.get_team_roster()
+    logger.info(f"Populating player data for {team.city}")
+    with duckdb.connect(f"md:nba_data?motherduck_token={MOTHERDUCK_TOKEN}") as conn:
+        for name in roster:
+            try:
+                logger.info(f"Populating {name} data")
+                player = Player(name)
+                player.create_player_shooting_splits_table(conn, team.id, "player_shooting_splits")
+                sleep(2) 
+            except Exception as e:
+                logger.error(f"Error creating player boxscore table for {name}: {e}")
 
 @flow()
 def populate_data():

@@ -1,4 +1,4 @@
-from nba_api.stats.endpoints import playercareerstats, PlayerDashboardByGameSplits, LeagueDashPlayerStats, PlayerDashboardByYearOverYear, CumeStatsPlayerGames, WinProbabilityPBP, PlayerGameLogs, PlayerGameLog
+from nba_api.stats.endpoints import playercareerstats, PlayerDashboardByGameSplits, LeagueDashPlayerStats, PlayerDashboardByYearOverYear, CumeStatsPlayerGames, WinProbabilityPBP, PlayerGameLogs, PlayerGameLog, PlayerDashPtShots
 from nba_api.stats.static import players
 from nba_api.stats.library.parameters import SeasonAll, SeasonNullable
 import pandas as pd
@@ -237,5 +237,20 @@ class Player:
         conn.commit()
 
         logging.info(f"Successfully updated boxscores for {self.name} in player_boxscores table")
+
+
+    def create_player_shooting_splits_table(self, conn, team_id : str, table_name : str):
+        """
+        Creates/updates a DuckDB table with player shooting splits data.
+        """ 
+        shots = PlayerDashPtShots(player_id=self.id, team_id=team_id, per_mode_simple="PerGame").get_dict()
+        shots_df = pl.DataFrame(shots['resultSets'][0]['rowSet'], schema=shots['resultSets'][0]['headers'])
+        conn.execute(f"""
+        CREATE OR REPLACE TABLE {table_name} AS 
+        SELECT * FROM shots_df
+        """)
+        conn.commit()
+        logging.info(f"Successfully populated {self.name} shooting splits...")
+
 
 
