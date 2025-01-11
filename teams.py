@@ -10,6 +10,16 @@ ABRV_TEAM_DICT = {'ATL': "Atlanta", 'BKN': 'Brooklyn', 'BOS': 'Boston', 'CHA': '
                       'HOU': "Houston", 'IND': 'Indiana', 'MEM': 'Memphis', 'MIA': 'Miami', 'MIL': 'Milwaukee', 'MIN': 'Minnesota', 'NOP': 'New Orleans', 'NYK': 'New York', 'LAC': 'Los Angeles Clippers', 'LAL': 'Los Angeles Lakers', 
                       'OKC': 'Oklahoma City', 'ORL': 'Orlando', 'PHI': 'Philadelphia', 'PHX': 'Phoenix', 'POR': 'Portland', 'SAC': 'Sacramento', 'SAS': 'San Antonio', 'TOR': 'Toronto', 'UTA': 'Utah', 'WAS': 'Washington'}
 
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,  # Set the logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+    format='%(asctime)s - %(levelname)s - %(message)s',  # Set the format of log messages
+    handlers=[
+        logging.StreamHandler()  # Output to terminal
+    ]
+)
+
+
 class Team:
     def __init__(self, city : str) -> None:
         self.city = city
@@ -208,23 +218,41 @@ class Team:
     
     #TODO TeamAndPlayersVsPlayers CAN BE USED FOR LINEUP COMPARISON
 
-    def get_team_roster(self) -> list[str]:
+    def get_team_roster(self) -> dict[str, list[dict[str, str]]]:
         """
-        Gets the current roster for the team.
+            Gets the current roster for the team.
 
-        Returns:
-            list[str]: List of player names on the team's current roster.
+            Returns:
+                dict[str, list[dict]]: A tuple containing:
+                    - A dictionary with the team name as the key and a list of player details as the value.
 
-        Example:
-            >>> team = Team('Atlanta')
-            >>> roster = team.get_team_roster()
-            >>> print(roster)
-            ['Trae Young', 'Dejounte Murray', 'Bogdan Bogdanovic', ...]
+            Example:
+                >>> team = Team('Atlanta')
+                >>> roster_dict = team.get_team_roster()
+                >>> print(roster_dict)
+                {'Atlanta': [
+                    {'PLAYER': 'Trae Young', 'NUM': '11', 'POSITION': 'G'},
+                    {'PLAYER': 'Dejounte Murray', 'NUM': '5', 'POSITION': 'G'},
+                    {'PLAYER': 'Bogdan Bogdanovic', 'NUM': '13', 'POSITION': 'G-F'},
+                    ...
+                ]}
         """
+        logging.info("Team selected: %s", self.city)
         roster = CommonTeamRoster(team_id=self.id).get_dict()
-        roster_df = pl.DataFrame(roster['resultSets'][0]['rowSet'], schema=roster['resultSets'][0]['headers'], orient='row')
-        roster_list = roster_df['PLAYER'].to_list()
-        return roster_list
+        roster_df = pl.DataFrame(
+            roster['resultSets'][0]['rowSet'],
+            schema=roster['resultSets'][0]['headers'],
+            orient='row'
+            )
+        # Map the TeamID to the team's city name
+        team_name = self.city
+        roster_df = roster_df.with_columns(pl.lit(team_name).alias("TeamID"))
+
+        roster_dict = {
+            team_name: roster_df.select(["PLAYER", "NUM", "POSITION"]).to_dicts()
+            }
+        logging.info("Team roster: %s", roster_dict)
+        return roster_dict
 
 @lru_cache(maxsize=None)
 def abrv_team_dict(team : str):

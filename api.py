@@ -79,17 +79,13 @@ def get_team_last_ten_games(city : str) -> dict[str, float]:
 def get_team_roster(city : str):
     try:
         team = Team(city)
-        roster_list = team.get_team_roster()
-        # roster = CommonTeamRoster(team_id=team.id).get_dict()
-        # roster_df = pl.DataFrame(roster['resultSets'][0]['rowSet'], schema=roster['resultSets'][0]['headers'], orient='row')
-        # roster_list = roster_df['PLAYER'].to_list()
-        response = dict()
-        response[city] = roster_list
+        response = team.get_team_roster()
         if not response:
             raise HTTPException(status_code=404, detail=f"No team members found for team: {city}")
     except ValueError:
         raise HTTPException(status_code=404, detail=f"Invalid team city: {city}")
     return response
+
     
 
 class GameStats(BaseModel):
@@ -144,8 +140,7 @@ def get_scoreboard():
 
 @app.get("/{team_name}-defense-stats")
 def get_team_defense_stats(team_name : str):
-    
-    team_id = (teams.find_teams_by_city(team_name)[0])['id']
+    team_id = (teams.find_teams_by_full_name(team_name)[0])['id']
     response = {}
     with duckdb.connect(f"md:nba_data?motherduck_token={MOTHERDUCK_TOKEN}") as conn:
         opponent_query = f"SELECT * FROM teams_opponent_stats WHERE TEAM_ID = '{team_id}'"
