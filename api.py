@@ -5,9 +5,10 @@ from pydantic import BaseModel
 from util import Database
 from nba_api.live.nba.endpoints import scoreboard
 from nba_api.stats.endpoints import CommonTeamRoster
-from nba_api.stats.static import teams
+from nba_api.stats.static import teams, players
 import os
 from datetime import datetime
+import duckdb
 
 MOTHERDUCK_TOKEN = os.environ.get('motherduck_token')
 
@@ -79,7 +80,10 @@ def get_team_last_ten_games(city : str) -> dict[str, float]:
 def get_team_roster(city : str):
     try:
         team = Team(city)
-        response = team.get_team_roster()
+        roster_df = team.get_team_roster()
+        response = {
+            team.city: roster_df.select(["PLAYER", "NUM", "POSITION"]).to_dicts()
+        }
         if not response:
             raise HTTPException(status_code=404, detail=f"No team members found for team: {city}")
     except ValueError:
@@ -180,4 +184,12 @@ def get_team_defense_stats(team_name : str):
             "OPP_OREB_PCT": four_factors_stats['OPP_OREB_PCT'][0]
         }
     return response
-                                
+
+@app.get("/{player_name}-shooting-splits")
+def get_player_shooting_splits(player_name : str):
+    player_id = (players.find_players_by_full_name(player_name)[0])['id']
+    with duckdb.connect(f"md:nba_data?motherduck_token={MOTHERDUCK_TOKEN}") as conn:
+        query = f"SELECT * FROM player_shooting_splits WHERE PLAYER_ID = '{player_id}'"
+        shooting_splits = conn.sql(query).pl()
+        response[player_name] = shooting_splits
+        return response

@@ -142,16 +142,20 @@ class Player:
         Null values are preserved in the returned DataFrame.
         """
         logging.info(f"Getting boxscores for {self.name}...")
-        boxscores = PlayerGameLog(player_id=self.id).get_dict()
-        boxscores_df = pl.DataFrame(boxscores['resultSets'][0]['rowSet'], schema=boxscores['resultSets'][0]['headers'], orient='row')
-        home_list = ["Away" if '@' in x else "Home" for x in boxscores_df['MATCHUP']]
-        opp_team = [x.split()[2] for x in boxscores_df['MATCHUP']]
-        boxscores_df = boxscores_df.with_columns([
-            pl.Series(name="LOCATION", values=home_list),
-            pl.Series(name="OPPONENT", values=opp_team)
-        ])
-        logging.info(f"Returning boxscores for {self.name}...")
-        return boxscores_df
+        try:
+            boxscores = PlayerGameLog(player_id=self.id, timeout=10).get_dict()
+            boxscores_df = pl.DataFrame(boxscores['resultSets'][0]['rowSet'], schema=boxscores['resultSets'][0]['headers'], orient='row')
+            home_list = ["Away" if '@' in x else "Home" for x in boxscores_df['MATCHUP']]
+            opp_team = [x.split()[2] for x in boxscores_df['MATCHUP']]
+            boxscores_df = boxscores_df.with_columns([
+                pl.Series(name="LOCATION", values=home_list),
+                pl.Series(name="OPPONENT", values=opp_team)
+            ])
+            logging.info(f"Returning boxscores for {self.name}...")
+            return boxscores_df
+        except Exception as e:
+            logging.error(f"Error getting boxscores for {self.name}: {e}")
+            raise
     
     # def player_stat_duckdb(self, stat: str) -> pd.DataFrame:
     #     logging.info(f"Getting boxscores for {self.name}...")
@@ -242,15 +246,41 @@ class Player:
     def create_player_shooting_splits_table(self, conn, team_id : str, table_name : str):
         """
         Creates/updates a DuckDB table with player shooting splits data.
+        try:
         """ 
-        shots = PlayerDashPtShots(player_id=self.id, team_id=team_id, per_mode_simple="PerGame").get_dict()
-        shots_df = pl.DataFrame(shots['resultSets'][0]['rowSet'], schema=shots['resultSets'][0]['headers'])
-        conn.execute(f"""
-        CREATE OR REPLACE TABLE {table_name} AS 
-        SELECT * FROM shots_df
-        """)
-        conn.commit()
-        logging.info(f"Successfully populated {self.name} shooting splits...")
+        try:
+            shots = PlayerDashPtShots(player_id=self.id, team_id=team_id, per_mode_simple="PerGame", timeout=10).get_dict()
+            shots_df = pl.DataFrame(shots['resultSets'][0]['rowSet'], schema=shots['resultSets'][0]['headers'], orient='row')
+            # Check if table exists
+            table_exists = conn.execute(f"""
+                SELECT EXISTS (
+                    SELECT 1 
+                    FROM information_schema.tables 
+                    WHERE table_name = '{table_name.lower()}'
+                )
+            """).fetchone()[0]
+
+            if not table_exists:
+                logging.info(f"Creating {table_name}...")
+                conn.execute(f"""
+                    CREATE TABLE {table_name} AS 
+                    SELECT * FROM shots_df
+                """)
+            else:
+                logging.info(f"Updating {table_name}...")
+                conn.register('new_shots', shots_df)
+                conn.execute(f"""
+                    DELETE FROM {table_name}
+                    WHERE PLAYER_ID = '{self.id}';
+                    
+                    INSERT INTO {table_name}
+                    SELECT * FROM new_shots;
+                """)
+            conn.commit()
+            logging.info(f"Successfully populated {self.name} shooting splits...")
+        except Exception as e:
+            logging.error(f"Error getting shooting splits for {self.name}: {e}")
+            raise
 
 
 

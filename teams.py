@@ -237,8 +237,8 @@ class Team:
                     ...
                 ]}
         """
-        logging.info("Team selected: %s", self.city)
-        roster = CommonTeamRoster(team_id=self.id).get_dict()
+        logging.info("Team Roster selected: %s", self.city)
+        roster = CommonTeamRoster(team_id=self.id, timeout=10).get_dict()
         roster_df = pl.DataFrame(
             roster['resultSets'][0]['rowSet'],
             schema=roster['resultSets'][0]['headers'],
@@ -248,11 +248,8 @@ class Team:
         team_name = self.city
         roster_df = roster_df.with_columns(pl.lit(team_name).alias("TeamID"))
 
-        roster_dict = {
-            team_name: roster_df.select(["PLAYER", "NUM", "POSITION"]).to_dicts()
-            }
-        logging.info("Team roster: %s", roster_dict)
-        return roster_dict
+        
+        return roster_df
 
 @lru_cache(maxsize=None)
 def abrv_team_dict(team : str):
