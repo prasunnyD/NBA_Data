@@ -105,7 +105,7 @@ class PlayerGamesResponse(BaseModel):
 def get_player_last_x_games(name: str, last_number_of_games : int) -> dict[str, dict[str, float]]:
     try:
         player = Player(name)
-        query = f"SELECT GAME_DATE,PTS,AST,REB,MIN FROM player_boxscores WHERE Player_ID = '{player.id}' Order by game_id DESC LIMIT {last_number_of_games}"
+        query = f"SELECT GAME_DATE,PTS,AST,REB,FG3M,MIN FROM player_boxscores WHERE Player_ID = '{player.id}' Order by game_id DESC LIMIT {last_number_of_games}"
         with duckdb.connect(f"md:nba_data?motherduck_token={MOTHERDUCK_TOKEN}") as conn:
             player_game_logs = conn.sql(query).pl()
             response = {}
@@ -115,6 +115,7 @@ def get_player_last_x_games(name: str, last_number_of_games : int) -> dict[str, 
                     'points': float(row['PTS']),
                     'assists': float(row['AST']),
                     'rebounds': float(row['REB']),
+                    'fg3m': float(row['FG3M']),
                     'minutes': float(row['MIN'])
                 }
         if not response:
@@ -188,8 +189,22 @@ def get_team_defense_stats(team_name : str):
 @app.get("/{player_name}-shooting-splits")
 def get_player_shooting_splits(player_name : str):
     player_id = (players.find_players_by_full_name(player_name)[0])['id']
+    response = {}
     with duckdb.connect(f"md:nba_data?motherduck_token={MOTHERDUCK_TOKEN}") as conn:
         query = f"SELECT * FROM player_shooting_splits WHERE PLAYER_ID = '{player_id}'"
         shooting_splits = conn.sql(query).pl()
-        response[player_name] = shooting_splits
+        response[player_name] = {
+            "FG2A":shooting_splits['FG2A'][0],
+            "FG2M":shooting_splits['FG2M'][0], 
+            "FG2_PCT":shooting_splits['FG2_PCT'][0],
+            "FG3A":shooting_splits['FG3A'][0],
+            "FG3M":shooting_splits['FG3M'][0],
+            "FG3_PCT":shooting_splits['FG3_PCT'][0],
+            "FGA":shooting_splits['FGA'][0],
+            "FGM":shooting_splits['FGM'][0],
+            "FG_PCT":shooting_splits['FG_PCT'][0],
+            "EFG_PCT":shooting_splits['EFG_PCT'][0],
+            "FG2A_FREQUENCY":shooting_splits['FG2A_FREQUENCY'][0],
+            "FG3A_FREQUENCY":shooting_splits['FG3A_FREQUENCY'][0]
+        }
         return response

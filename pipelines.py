@@ -60,7 +60,8 @@ def populate_team_stats():
 @task
 def populate_player_shooting_splits(team : Team):
     logger = get_run_logger()
-    roster = team.get_team_roster()
+    roster_df = team.get_team_roster()
+    roster= roster_df.select('PLAYER').to_series().to_list()
     logger.info(f"Populating player data for {team.city}")
     with duckdb.connect(f"md:nba_data?motherduck_token={MOTHERDUCK_TOKEN}") as conn:
         for name in roster:
