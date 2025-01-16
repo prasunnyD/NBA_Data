@@ -208,3 +208,17 @@ def get_player_shooting_splits(player_name : str):
             "FG3A_FREQUENCY":shooting_splits['FG3A_FREQUENCY'][0]
         }
         return response
+    
+@app.get("/{player_name}-headline-stats")
+def get_player_headline_stats(player_name : str):
+    player_id = (players.find_players_by_full_name(player_name)[0])['id']
+    response = {}
+    with duckdb.connect(f"md:nba_data?motherduck_token={MOTHERDUCK_TOKEN}") as conn:
+        query = f"SELECT * FROM player_headline_stats WHERE PLAYER_ID = '{player_id}'"
+        shooting_splits = conn.sql(query).pl()
+        response[player_name] = {
+            "PTS":shooting_splits['PTS'][0],
+            "AST":shooting_splits['AST'][0], 
+            "REB":shooting_splits['REB'][0]
+        }
+        return response

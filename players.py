@@ -1,4 +1,4 @@
-from nba_api.stats.endpoints import playercareerstats, PlayerDashboardByGameSplits, LeagueDashPlayerStats, PlayerDashboardByYearOverYear, CumeStatsPlayerGames, WinProbabilityPBP, PlayerGameLogs, PlayerGameLog, PlayerDashPtShots
+from nba_api.stats.endpoints import playercareerstats, PlayerDashboardByGameSplits, CommonPlayerInfo, PlayerDashboardByYearOverYear, CumeStatsPlayerGames, WinProbabilityPBP, PlayerGameLogs, PlayerGameLog, PlayerDashPtShots
 from nba_api.stats.static import players
 from nba_api.stats.library.parameters import SeasonAll, SeasonNullable
 import pandas as pd
@@ -157,29 +157,64 @@ class Player:
             logging.error(f"Error getting boxscores for {self.name}: {e}")
             raise
     
-    # def player_stat_duckdb(self, stat: str) -> pd.DataFrame:
-    #     logging.info(f"Getting boxscores for {self.name}...")
-    #     boxscores = PlayerGameLog(player_id=self.id,season=SeasonAll.all).get_dict()
-    #     boxscores_df = pl.DataFrame(boxscores['resultSets'][0]['rowSet'], schema=boxscores['resultSets'][0]['headers'])
-    #     # Convert to DuckDB and process
-    #     query = f"""
-    #     SELECT 
-    #         SEASON_ID,
-    #         GAME_DATE,
-    #         {stat},
-    #         MIN,
-    #         CASE 
-    #             WHEN MATCHUP LIKE '%@%' THEN 'Away'
-    #             ELSE 'Home'
-    #         END as LOCATION,
-    #         split_part(MATCHUP, ' ', 3) as OPPONENT
-    #     FROM boxscores_df
-    #     """
+    def create_player_headline_stats_table(self, conn , table_name : str):
+        """
+        WARNING: THIS MIGHT BE TEMPORARY. NOT SURE
+
+        Creates a table in the database with player headline stats.
         
-        # result_df = duckdb.query(query).pl()
+        This function fetches common player info stats from the NBA API and either creates
+        a new table or updates an existing one in the provided database connection.
         
-        # logging.info(f"Returning processed boxscores for {self.name}...")
-        # return result_df.drop_nulls()
+        Args:
+            conn: Database connection object
+            table_name (str): Name of the table to create/update
+            
+        Raises:
+            Exception: If there is an error fetching stats or updating the database
+            
+        The function will:
+        1. Fetch player headline stats using CommonPlayerInfo endpoint
+        2. Check if table exists in database
+        3. If table doesn't exist, create new table with stats
+        4. If table exists, update existing player's stats
+        5. Commit changes to database
+
+        
+        """
+        try:
+            stats = CommonPlayerInfo(player_id=self.id).get_dict()
+            stats_df = pl.DataFrame(stats['resultSets'][1]['rowSet'], schema=stats['resultSets'][1]['headers'], orient='row')
+            # Check if table exists
+            table_exists = conn.execute(f"""
+                SELECT EXISTS (
+                    SELECT 1 
+                    FROM information_schema.tables 
+                    WHERE table_name = '{table_name.lower()}'
+                )
+            """).fetchone()[0]
+
+            if not table_exists:
+                logging.info(f"Creating {table_name}...")
+                conn.execute(f"""
+                    CREATE TABLE {table_name} AS 
+                    SELECT * FROM stats_df
+                """)
+            else:
+                logging.info(f"Updating {table_name}...")
+                conn.register('new_stats', stats_df)
+                conn.execute(f"""
+                    DELETE FROM {table_name}
+                    WHERE PLAYER_ID = '{self.id}';
+                    
+                    INSERT INTO {table_name}
+                    SELECT * FROM new_stats;
+                """)
+            conn.commit()
+            logging.info(f"Successfully populated {self.name} headline stats...")
+        except Exception as e:
+            logging.error(f"Error getting headline stats for {self.name}: {e}")
+            raise
 
     def player_minutes_polars(self) -> pl.DataFrame:
         '''
