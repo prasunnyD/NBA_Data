@@ -115,7 +115,7 @@ def get_player_last_x_games(name: str, last_number_of_games : int) -> dict[str, 
                     'points': float(row['PTS']),
                     'assists': float(row['AST']),
                     'rebounds': float(row['REB']),
-                    'fg3m': float(row['FG3M']),
+                    'threePointersMade': float(row['FG3M']),
                     'minutes': float(row['MIN'])
                 }
         if not response:
