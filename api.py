@@ -5,9 +5,10 @@ from pydantic import BaseModel
 from util import Database
 from nba_api.live.nba.endpoints import scoreboard
 from nba_api.stats.endpoints import CommonTeamRoster
-from nba_api.stats.static import teams
+from nba_api.stats.static import teams, players
 import os
 from datetime import datetime
+import duckdb
 
 MOTHERDUCK_TOKEN = os.environ.get('motherduck_token')
 
@@ -79,7 +80,10 @@ def get_team_last_ten_games(city : str) -> dict[str, float]:
 def get_team_roster(city : str):
     try:
         team = Team(city)
-        response = team.get_team_roster()
+        roster_df = team.get_team_roster()
+        response = {
+            team.city: roster_df.select(["PLAYER", "NUM", "POSITION"]).to_dicts()
+        }
         if not response:
             raise HTTPException(status_code=404, detail=f"No team members found for team: {city}")
     except ValueError:
@@ -101,7 +105,7 @@ class PlayerGamesResponse(BaseModel):
 def get_player_last_x_games(name: str, last_number_of_games : int) -> dict[str, dict[str, float]]:
     try:
         player = Player(name)
-        query = f"SELECT GAME_DATE,PTS,AST,REB,MIN FROM player_boxscores WHERE Player_ID = '{player.id}' Order by game_id DESC LIMIT {last_number_of_games}"
+        query = f"SELECT GAME_DATE,PTS,AST,REB,FG3M,MIN FROM player_boxscores WHERE Player_ID = '{player.id}' Order by game_id DESC LIMIT {last_number_of_games}"
         with duckdb.connect(f"md:nba_data?motherduck_token={MOTHERDUCK_TOKEN}") as conn:
             player_game_logs = conn.sql(query).pl()
             response = {}
@@ -111,6 +115,7 @@ def get_player_last_x_games(name: str, last_number_of_games : int) -> dict[str, 
                     'points': float(row['PTS']),
                     'assists': float(row['AST']),
                     'rebounds': float(row['REB']),
+                    'threePointersMade': float(row['FG3M']),
                     'minutes': float(row['MIN'])
                 }
         if not response:
@@ -180,4 +185,40 @@ def get_team_defense_stats(team_name : str):
             "OPP_OREB_PCT": four_factors_stats['OPP_OREB_PCT'][0]
         }
     return response
-                                
+
+@app.get("/{player_name}-shooting-splits")
+def get_player_shooting_splits(player_name : str):
+    player_id = (players.find_players_by_full_name(player_name)[0])['id']
+    response = {}
+    with duckdb.connect(f"md:nba_data?motherduck_token={MOTHERDUCK_TOKEN}") as conn:
+        query = f"SELECT * FROM player_shooting_splits WHERE PLAYER_ID = '{player_id}'"
+        shooting_splits = conn.sql(query).pl()
+        response[player_name] = {
+            "FG2A":shooting_splits['FG2A'][0],
+            "FG2M":shooting_splits['FG2M'][0], 
+            "FG2_PCT":shooting_splits['FG2_PCT'][0],
+            "FG3A":shooting_splits['FG3A'][0],
+            "FG3M":shooting_splits['FG3M'][0],
+            "FG3_PCT":shooting_splits['FG3_PCT'][0],
+            "FGA":shooting_splits['FGA'][0],
+            "FGM":shooting_splits['FGM'][0],
+            "FG_PCT":shooting_splits['FG_PCT'][0],
+            "EFG_PCT":shooting_splits['EFG_PCT'][0],
+            "FG2A_FREQUENCY":shooting_splits['FG2A_FREQUENCY'][0],
+            "FG3A_FREQUENCY":shooting_splits['FG3A_FREQUENCY'][0]
+        }
+        return response
+    
+@app.get("/{player_name}-headline-stats")
+def get_player_headline_stats(player_name : str):
+    player_id = (players.find_players_by_full_name(player_name)[0])['id']
+    response = {}
+    with duckdb.connect(f"md:nba_data?motherduck_token={MOTHERDUCK_TOKEN}") as conn:
+        query = f"SELECT * FROM player_headline_stats WHERE PLAYER_ID = '{player_id}'"
+        shooting_splits = conn.sql(query).pl()
+        response[player_name] = {
+            "PTS":shooting_splits['PTS'][0],
+            "AST":shooting_splits['AST'][0], 
+            "REB":shooting_splits['REB'][0]
+        }
+        return response
