@@ -2,15 +2,21 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from main import *
 from pydantic import BaseModel
-from util import Database
-from nba_api.live.nba.endpoints import scoreboard
-from nba_api.stats.endpoints import CommonTeamRoster
 from nba_api.stats.static import teams, players
 import os
-from datetime import datetime
+from curl_cffi import requests
 import duckdb
+from contextlib import asynccontextmanager
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.inmemory import InMemoryBackend
+from fastapi_cache.decorator import cache
 
 MOTHERDUCK_TOKEN = os.environ.get('motherduck_token')
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    FastAPICache.init(InMemoryBackend(), prefix="fastapi-cache")
+    yield
 
 app = FastAPI()
 
@@ -105,12 +111,12 @@ class PlayerGamesResponse(BaseModel):
 def get_player_last_x_games(name: str, last_number_of_games : int) -> dict[str, dict[str, float]]:
     try:
         player = Player(name)
-        query = f"SELECT GAME_DATE,PTS,AST,REB,FG3M,MIN FROM player_boxscores WHERE Player_ID = '{player.id}' Order by game_id DESC LIMIT {last_number_of_games}"
+        query = f"SELECT strptime(GAME_DATE, '%b %d, %Y')::DATE AS GAME_DATE,PTS,AST,REB,FG3M,MIN FROM player_boxscores WHERE Player_ID = '{player.id}' Order by GAME_DATE desc limit {last_number_of_games}"
         with duckdb.connect(f"md:nba_data?motherduck_token={MOTHERDUCK_TOKEN}") as conn:
             player_game_logs = conn.sql(query).pl()
             response = {}
             for row in player_game_logs.iter_rows(named=True):
-                game_date = row['GAME_DATE']
+                game_date = row['GAME_DATE'].strftime('%Y-%m-%d')
                 response[game_date] = {
                     'points': float(row['PTS']),
                     'assists': float(row['AST']),
@@ -132,9 +138,13 @@ def get_player_last_x_games(name: str, last_number_of_games : int) -> dict[str, 
     return response
 
 
-@app.get("/scoreboard") # Cache until midnight
+@app.get("/scoreboard")
+@cache(expire=3600)
 def get_scoreboard():
-    games = scoreboard.ScoreBoard().games.get_dict()
+    session = requests.Session(impersonate="chrome")
+    url = "https://cdn.nba.com/static/json/liveData/scoreboard/todaysScoreboard_00.json"
+    response = session.get(url)
+    games = response.json()['scoreboard']['games']
     response = {}
     for game in games:
         response[game['gameId']] = {
@@ -170,6 +180,8 @@ def get_team_defense_stats(team_name : str):
             "OPP_AST_RANK": opponent_stats['OPP_AST_RANK'][0],
             "OPP_AST": opponent_stats['OPP_AST'][0],
             "OPP_FG3A_RANK": opponent_stats['OPP_FG3A_RANK'][0],
+            "OPP_FG3_PCT": opponent_stats['OPP_FG3_PCT'][0],
+            "OPP_FG3_PCT_RANK": opponent_stats['OPP_FG3_PCT_RANK'][0],
             "OPP_FG3A": opponent_stats['OPP_FG3A'][0],
             "DEF_RATING_RANK": defense_stats['DEF_RATING_RANK'][0],
             "DEF_RATING": defense_stats['DEF_RATING'][0],
