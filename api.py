@@ -4,7 +4,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from main import *
 from pydantic import BaseModel
 from util import Database
-from registration import register_user, login_user
+from registration import UserRegistration
 from models import RegisterItem, LoginItem, PlayerModel, PoissonDist
 from nba_api.live.nba.endpoints import scoreboard
 from nba_api.stats.endpoints import CommonTeamRoster
@@ -27,11 +27,14 @@ app.add_middleware(
 
 security = HTTPBearer()
 
+# Initialize UserRegistration class
+user_service = UserRegistration()
+
 @app.post("/register")
 def register(item: RegisterItem):
     """Registers a new user."""
     try:
-        return register_user(item.full_name, item.username, item.password)
+        return user_service.register_user(item.full_name, item.username, item.password)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -40,10 +43,9 @@ def register(item: RegisterItem):
 def login(item: LoginItem):
     """Logs in a user."""
     try:
-        return login_user(item.username, item.password)
+        return user_service.login_user(item.username, item.password)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
-
 
 @app.get("/protected-route")
 def protected_route(credentials: HTTPAuthorizationCredentials = Depends(security)):
