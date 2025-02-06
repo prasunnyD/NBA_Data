@@ -28,9 +28,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.on_event("startup")
-async def startup():
-    FastAPICache.init(InMemoryBackend(), prefix="fastapi-cache")
 class PlayerModel(BaseModel):
     city:str
     opp_city : str
