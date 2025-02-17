@@ -1,0 +1,30 @@
+version: '3'
+services:
+  prefect:
+    build:
+      context: .
+      dockerfile: Dockerfile.prefect
+    ports:
+      - "4200:4200"
+    env_file:
+      - .env
+    environment:
+      - motherduck_token=${MOTHERDUCK_TOKEN}
+    volumes:
+      - prefect_data:/root/.prefect
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - motherduck_token=${MOTHERDUCK_TOKEN}
+    depends_on:
+      - prefect
+
+volumes:
+  prefect_data:

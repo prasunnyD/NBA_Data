@@ -1,15 +1,15 @@
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from main import *
 from pydantic import BaseModel
-from util import Database
 from registration import UserRegistration
 from models import RegisterItem, LoginItem, PlayerModel, PoissonDist
 from nba_api.live.nba.endpoints import scoreboard
 from nba_api.stats.endpoints import CommonTeamRoster
 from nba_api.stats.static import teams, players
 import os
+from teams import Team
+from players import Player
 from datetime import datetime
 import duckdb
 
@@ -50,19 +50,18 @@ def login(item: LoginItem):
 @app.get("/protected-route")
 def protected_route(credentials: HTTPAuthorizationCredentials = Depends(security)):
     """Example protected route."""
-    user = verify_token(credentials.credentials)
+    user = user_service.verify_token(credentials.credentials)
     return {"message": f"Hello, {user}!"}
 
-
-@app.post("/points-prediction/{player_name}")
-def points_prediction(player_name: str,item: PlayerModel):
-    """
-    Takes player name, opponent city, and minutes as inputs.
-    Returns predicted points
-    """
-    prediction = predict_result(f'{player_name}_points_model.sav', item.opp_city, item.minutes)
-    print(prediction)
-    return {"projected_points": prediction[0][0]}
+# @app.post("/points-prediction/{player_name}")
+# def points_prediction(player_name: str,item: PlayerModel):
+#     """
+#     Takes player name, opponent city, and minutes as inputs.
+#     Returns predicted points
+#     """
+#     prediction = predict_result(f'{player_name}_points_model.sav', item.opp_city, item.minutes)
+#     print(prediction)
+#     return {"projected_points": prediction[0][0]}
 
 @app.post("/poisson_dist")
 def get_poisson_dist(poissondist : PoissonDist):
@@ -90,7 +89,7 @@ def get_team_last_ten_games(city : str) -> dict[str, float]:
         query = f"SELECT GAME_DATE,PTS FROM team_boxscores WHERE TEAM_ID = '{team.id}' LIMIT 10"
         conn = duckdb.connect("team_boxscores.db")
         team_game_logs = conn.sql(query).pl()
-        response = player_game_logs.rows_by_key(['GAME_DATE'])
+        response = team_game_logs.rows_by_key(['GAME_DATE'])
         if not response:
             raise HTTPException(status_code=404, detail=f"No games found for team: {city}")
     except ValueError:
