@@ -1,8 +1,11 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from main import *
 from pydantic import BaseModel
 from util import Database
+from registration import UserRegistration
+from models import RegisterItem, LoginItem, PlayerModel, PoissonDist
 from nba_api.live.nba.endpoints import scoreboard
 from nba_api.stats.endpoints import CommonTeamRoster
 from nba_api.stats.static import teams, players
@@ -22,10 +25,34 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-class PlayerModel(BaseModel):
-    city:str
-    opp_city : str
-    minutes:float
+security = HTTPBearer()
+
+# Initialize UserRegistration class
+user_service = UserRegistration()
+
+@app.post("/register")
+def register(item: RegisterItem):
+    """Registers a new user."""
+    try:
+        return user_service.register_user(item.full_name, item.username, item.password)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/login")
+def login(item: LoginItem):
+    """Logs in a user."""
+    try:
+        return user_service.login_user(item.username, item.password)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@app.get("/protected-route")
+def protected_route(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    """Example protected route."""
+    user = verify_token(credentials.credentials)
+    return {"message": f"Hello, {user}!"}
+
 
 @app.post("/points-prediction/{player_name}")
 def points_prediction(player_name: str,item: PlayerModel):
@@ -36,11 +63,6 @@ def points_prediction(player_name: str,item: PlayerModel):
     prediction = predict_result(f'{player_name}_points_model.sav', item.opp_city, item.minutes)
     print(prediction)
     return {"projected_points": prediction[0][0]}
-
-class PoissonDist(BaseModel):
-    predictedPoints : float
-    bookLine : float
-
 
 @app.post("/poisson_dist")
 def get_poisson_dist(poissondist : PoissonDist):
