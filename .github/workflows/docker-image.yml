@@ -1,0 +1,51 @@
+name: Build and Push to ECR
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  AWS_REGION: us-east-1  # Change to your region
+  ECR_REPOSITORY_PREFIX: NBA_DATA  # Change to your ECR repo prefix
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+
+    - name: Build and push API image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_PREFIX/nba-api:$IMAGE_TAG -f Dockerfile.api .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY_PREFIX/nba-api:$IMAGE_TAG
+
+    - name: Build and push Prefect image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY_PREFIX/nba-prefect:$IMAGE_TAG -f Dockerfile.prefect .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY_PREFIX/nba-prefect:$IMAGE_TAG
+
+    - name: Clean up
+      if: always()
+      run: |
+        docker logout ${{ steps.login-ecr.outputs.registry }}
